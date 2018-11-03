@@ -25,16 +25,18 @@
 package com.netikalyan.librarymanagement;
 
 import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
-public class TransactionViewModel extends ViewModel {
+public class TransactionViewModel extends AndroidViewModel {
     private LiveData<List<TransactionEntity>> mTransactionList;
     private LibraryRepository mRepository;
 
-    public TransactionViewModel(Application application) {
+    public TransactionViewModel(@NonNull Application application) {
+        super(application);
         mRepository = new LibraryRepository(application);
         mTransactionList = mRepository.getAllTransactions();
     }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+
+            <TextView android:text="@string/transaction_id" />
+
+            <TextView android:id="@+id/textTransactionID" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView android:text="@string/transaction_book_id" />
+
+            <TextView android:id="@+id/textTransactionBookID" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView android:text="@string/transaction_member_id" />
+
+            <TextView android:id="@+id/textTransactionMemberID" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView android:text="@string/transaction_loan_date" />
+
+            <TextView android:id="@+id/textTransactionLoanDate" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView android:text="@string/transaction_return_date" />
+
+            <TextView android:id="@+id/textTransactionReturnDate" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

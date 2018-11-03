@@ -38,14 +38,14 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.navigationContainer, new NavigationFragment()).commitNow();
-            getSupportFragmentManager().beginTransaction().replace(R.id.optionsContainer, new OptionsFragment()).commitNow();
-        }
 
         mBookFragment = BookFragment.newInstance();
         mMemberFragment = MemberFragment.newInstance();
         mTransactionFragment = TransactionFragment.newInstance();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().add(R.id.navigationContainer, new NavigationFragment()).add(R.id.optionsContainer, new OptionsFragment()).add(R.id.container, mBookFragment).commitNow();
+        }
 
         mTabLayout = findViewById(R.id.tabLayout);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -84,12 +84,30 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (currentTab.getText().equals(getString(R.string.tab_book))) {
             switch (action) {
                 case ADD:
+                    BookEntity newbook = new BookEntity();
+                    newbook.setBookID(mBookFragment.getBookID());
+                    newbook.setTitle(mBookFragment.getBookTitle());
+                    newbook.setAuthor(mBookFragment.getBookAuthor());
+                    newbook.setPrice(mBookFragment.getBookPrice());
+                    newbook.setAvailable(mBookFragment.getBookAvailable());
+                    mBookFragment.addBook(newbook);
                     break;
                 case DELETE:
+                    BookEntity delBook = mBookFragment.searchBook(mBookFragment.getBookID());
+                    mBookFragment.deleteBook(delBook);
                     break;
                 case MODIFY:
+                    BookEntity updateBook = mBookFragment.searchBook(mBookFragment.getBookID());
+                    updateBook.setBookID(mBookFragment.getBookID());
+                    updateBook.setTitle(mBookFragment.getBookTitle());
+                    updateBook.setAuthor(mBookFragment.getBookAuthor());
+                    updateBook.setPrice(mBookFragment.getBookPrice());
+                    updateBook.setAvailable(mBookFragment.getBookAvailable());
+                    mBookFragment.modifyBook(updateBook);
                     break;
                 case SEARCH:
+                    BookEntity searchBook = mBookFragment.searchBook(mBookFragment.getBookID());
+                    mBookFragment.setBook(searchBook);
                     break;
             }
         } else if (currentTab.getText().equals(getString(R.string.tab_member))) {

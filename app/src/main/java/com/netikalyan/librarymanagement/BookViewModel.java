@@ -25,16 +25,18 @@
 package com.netikalyan.librarymanagement;
 
 import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
-public class BookViewModel extends ViewModel {
+public class BookViewModel extends AndroidViewModel {
     private LiveData<List<BookEntity>> mBookList;
     private LibraryRepository mRepository;
 
-    public BookViewModel(Application application) {
+    public BookViewModel(@NonNull Application application) {
+        super(application);
         mRepository = new LibraryRepository(application);
         mBookList = mRepository.getAllBooks();
     }
@@ -57,5 +59,9 @@ public class BookViewModel extends ViewModel {
 
     public void deleteAllBooks() {
         mRepository.deleteAllBooks();
+    }
+
+    public BookEntity searchBook(int bookID) {
+        return mRepository.searchBook(bookID);
     }
 }

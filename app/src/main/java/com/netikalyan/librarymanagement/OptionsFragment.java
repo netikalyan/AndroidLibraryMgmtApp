@@ -38,13 +38,8 @@ public class OptionsFragment extends Fragment implements View.OnClickListener {
     private OnFragmentInteractionListener mListener;
     private Button btnAdd, btnSearch, btnModify, btnDelete;
 
-    public OptionsFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public static OptionsFragment newInstance() {
+        return new OptionsFragment();
     }
 
     @Nullable

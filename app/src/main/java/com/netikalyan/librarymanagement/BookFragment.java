@@ -24,8 +24,6 @@
 
 package com.netikalyan.librarymanagement;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,12 +31,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.List;
+import android.widget.EditText;
 
 public class BookFragment extends Fragment {
 
     private BookViewModel mViewModel;
+    private EditText editBookID, editBookTitle, editBookAuthor, editBookPrice, editBookAvailable;
 
     public static BookFragment newInstance() {
         return new BookFragment();
@@ -48,18 +46,61 @@ public class BookFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.book_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.book_fragment, container, false);
+        editBookID = rootView.findViewById(R.id.editBookID);
+        editBookTitle = rootView.findViewById(R.id.editBookTitle);
+        editBookAuthor = rootView.findViewById(R.id.editBookAuthor);
+        editBookPrice = rootView.findViewById(R.id.editBookPrice);
+        editBookAvailable = rootView.findViewById(R.id.editBookAvailable);
+        return rootView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(BookViewModel.class);
-        mViewModel.getAllBooks().observe(this, new Observer<List<BookEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<BookEntity> bookEntities) {
+    }
 
-            }
-        });
+    public void addBook(BookEntity book) {
+        mViewModel.addNewBook(book);
+    }
+
+    public BookEntity searchBook(int bookID) {
+        return mViewModel.searchBook(bookID);
+    }
+
+    public void modifyBook(BookEntity book) {
+        mViewModel.updateBook(book);
+    }
+
+    public void deleteBook(BookEntity book) {
+        mViewModel.deleteBook(book);
+    }
+
+    public int getBookID() {
+        return Integer.parseInt(editBookID.getText().toString());
+    }
+
+    public String getBookTitle() {
+        return editBookTitle.getText().toString();
+    }
+
+    public String getBookAuthor() {
+        return editBookAuthor.getText().toString();
+    }
+
+    public float getBookPrice() {
+        return Float.parseFloat(editBookPrice.getText().toString());
+    }
+
+    public int getBookAvailable() {
+        return Integer.parseInt(editBookAvailable.getText().toString());
+    }
+
+    public void setBook(BookEntity book) {
+        editBookID.setText(String.valueOf(book.getBookID()));
+        editBookTitle.setText(book.getTitle());
+        editBookAuthor.setText(book.getAuthor());
+        editBookPrice.setText(String.valueOf(book.getPrice()));
+        editBookAvailable.setText(String.valueOf(book.getAvailable()));
     }
 }

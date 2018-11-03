@@ -72,6 +72,10 @@ public class LibraryRepository {
         mBookDao.deleteAll();
     }
 
+    public BookEntity searchBook(int bookID) {
+        return mBookDao.searchBook(bookID);
+    }
+
     /**
      * MEMBERS TABLE
      */
@@ -93,6 +97,10 @@ public class LibraryRepository {
 
     public void deleteAllMembers() {
         mMemberDao.deleteAll();
+    }
+
+    public MemberEntity searchMember(int memberID) {
+        return mMemberDao.searchMember(memberID);
     }
 
     /**

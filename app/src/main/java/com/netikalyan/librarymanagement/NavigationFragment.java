@@ -38,13 +38,8 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     private OnFragmentInteractionListener mListener;
     private Button btnFirst, btnPrevious, btnNext, btnLast;
 
-    public NavigationFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public static NavigationFragment newInstance() {
+        return new NavigationFragment();
     }
 
     @Nullable
