@@ -31,16 +31,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.netikalyan.librarymanagement.TransactionListFragment.OnListFragmentInteractionListener;
-
 import java.util.List;
 
-public class TransactionEntityRecyclerViewAdapter extends RecyclerView.Adapter<TransactionEntityRecyclerViewAdapter.ViewHolder> {
+public class TransactionEntityRecyclerViewAdapter
+        extends RecyclerView.Adapter<TransactionEntityRecyclerViewAdapter.ViewHolder> {
 
     private List<TransactionEntity> mTransactionList;
     private final OnListFragmentInteractionListener mListener;
 
-    TransactionEntityRecyclerViewAdapter(OnListFragmentInteractionListener listener) {
+    TransactionEntityRecyclerViewAdapter(List<TransactionEntity> transactions,
+                                         OnListFragmentInteractionListener listener) {
+        mTransactionList = transactions;
         mListener = listener;
     }
 
@@ -55,11 +56,14 @@ public class TransactionEntityRecyclerViewAdapter extends RecyclerView.Adapter<T
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.mItem = mTransactionList.get(position);
-        holder.mTransactionIdView.setText(String.valueOf(mTransactionList.get(position).getBookID()));
+        holder.mTransactionIdView
+                .setText(String.valueOf(mTransactionList.get(position).getBookID()));
         holder.mBookView.setText(mTransactionList.get(position).getBookID());
         holder.mMemberView.setText(mTransactionList.get(position).getMemberID());
-        holder.mLoanDateView.setText(String.valueOf(mTransactionList.get(position).getDateOfLoan()));
-        holder.mReturnDateView.setText(String.valueOf(mTransactionList.get(position).getDateOfReturn()));
+        holder.mLoanDateView
+                .setText(String.valueOf(mTransactionList.get(position).getDateOfLoan()));
+        holder.mReturnDateView
+                .setText(String.valueOf(mTransactionList.get(position).getDateOfReturn()));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +77,10 @@ public class TransactionEntityRecyclerViewAdapter extends RecyclerView.Adapter<T
 
     @Override
     public int getItemCount() {
-        return mTransactionList.size();
+        if (null == mTransactionList)
+            return 0;
+        else
+            return mTransactionList.size();
     }
 
     void setTransactionList(List<TransactionEntity> transactionEntities) {

@@ -33,22 +33,35 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import java.util.List;
 
 public class MemberFragment extends Fragment {
 
     private MemberViewModel mViewModel;
+    private EditText editMemberID, editMemberName, editMemberInfo;
 
-    public static MemberFragment newInstance() {
-        return new MemberFragment();
+    public static MemberFragment newInstance(MemberEntity entity) {
+        MemberFragment fragment = new MemberFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("ENTITY", entity);
+        fragment.setArguments(bundle);
+        return  fragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.member_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.member_fragment, container, false);
+        editMemberID = rootView.findViewById(R.id.editMemberID);
+        editMemberName = rootView.findViewById(R.id.editMemberName);
+        editMemberInfo = rootView.findViewById(R.id.editMemberInfo);
+        if (null != getArguments()) {
+            setMember((MemberEntity) getArguments().getParcelable(EntityItemActivity.DB_ITEM));
+        }
+        return rootView;
     }
 
     @Override
@@ -61,5 +74,48 @@ public class MemberFragment extends Fragment {
 
             }
         });
+    }
+
+    public void addMember(MemberEntity member) {
+        mViewModel.addNewMember(member);
+    }
+
+    public MemberEntity searchMember(int memberID) {
+        return mViewModel.searchMember(memberID);
+    }
+
+    public void modifyMember(MemberEntity member) {
+        mViewModel.updateMember(member);
+    }
+
+    public void deleteMember(MemberEntity member) {
+        mViewModel.deleteMember(member);
+    }
+
+    @NonNull
+    public MemberEntity getMemberDetails() {
+        MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setMemberID(getMemberID());
+        memberEntity.setName(getMemberName());
+        memberEntity.setAddlInfo(getMemberInfo());
+        return memberEntity;
+    }
+
+    public int getMemberID() {
+        return Integer.parseInt(editMemberID.getText().toString());
+    }
+
+    public String getMemberName() {
+        return editMemberName.getText().toString();
+    }
+
+    public String getMemberInfo() {
+        return editMemberInfo.getText().toString();
+    }
+
+    private void setMember(@NonNull MemberEntity member) {
+        editMemberID.setText(String.valueOf(member.getMemberID()));
+        editMemberName.setText(member.getName());
+        editMemberInfo.setText(member.getAddlInfo());
     }
 }

@@ -12,7 +12,7 @@
 
             <TextView android:text="@string/member_id" />
 
-            <TextView android:id="@+id/textBookID" />
+            <TextView android:id="@+id/textMemberID" />
         </TableRow>
 
         <TableRow>

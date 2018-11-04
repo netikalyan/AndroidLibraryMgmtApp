@@ -44,7 +44,8 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.db_navigation_fragment, container, false);
         btnFirst = rootView.findViewById(R.id.btnFirst);
         btnFirst.setOnClickListener(this);

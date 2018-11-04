@@ -42,6 +42,7 @@ import java.util.List;
 public class TransactionListFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private TransactionEntityRecyclerViewAdapter mAdapter;
+    private TransactionViewModel mViewModel;
 
     public TransactionListFragment() {
     }
@@ -60,22 +61,18 @@ public class TransactionListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            mAdapter = new TransactionEntityRecyclerViewAdapter(mListener);
+            mViewModel = ViewModelProviders.of(this).get(TransactionViewModel.class);
+            mViewModel.getAllTransactions().observe(this, new Observer<List<TransactionEntity>>() {
+                @Override
+                public void onChanged(@Nullable List<TransactionEntity> transactionEntities) {
+                    mAdapter.setTransactionList(transactionEntities);
+                }
+            });
+            mAdapter = new TransactionEntityRecyclerViewAdapter(
+                    mViewModel.getAllTransactions().getValue(), mListener);
             recyclerView.setAdapter(mAdapter);
         }
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        TransactionViewModel mViewModel = ViewModelProviders.of(this).get(TransactionViewModel.class);
-        mViewModel.getAllTransactions().observe(this, new Observer<List<TransactionEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<TransactionEntity> transactionEntities) {
-                mAdapter.setTransactionList(transactionEntities);
-            }
-        });
     }
 
     @Override
@@ -93,9 +90,5 @@ public class TransactionListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(TransactionEntity item);
     }
 }

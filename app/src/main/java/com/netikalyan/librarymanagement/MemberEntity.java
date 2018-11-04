@@ -27,9 +27,11 @@ package com.netikalyan.librarymanagement;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 @Entity(tableName = "Members")
-public class MemberEntity {
+public class MemberEntity implements ILibraryEntity {
     @PrimaryKey
     @ColumnInfo(name = "MemberID", typeAffinity = ColumnInfo.INTEGER)
     private int memberID;
@@ -39,6 +41,16 @@ public class MemberEntity {
 
     @ColumnInfo(name = "AddlInfo", typeAffinity = ColumnInfo.TEXT)
     private String addlInfo;
+
+    public MemberEntity() {
+
+    }
+
+    public MemberEntity(Parcel source) {
+        memberID = source.readInt();
+        name = source.readString();
+        addlInfo = source.readString();
+    }
 
     public int getMemberID() {
         return memberID;
@@ -62,5 +74,29 @@ public class MemberEntity {
 
     public void setAddlInfo(String addlInfo) {
         this.addlInfo = addlInfo;
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @Override
+        public Object createFromParcel(Parcel source) {
+            return new MemberEntity(source);
+        }
+
+        @Override
+        public Object[] newArray(int size) {
+            return new MemberEntity[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.memberID);
+        dest.writeString(this.name);
+        dest.writeString(this.addlInfo);
     }
 }

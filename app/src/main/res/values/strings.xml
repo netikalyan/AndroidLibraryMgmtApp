@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Library Management</string>
+    <string name="tab_book_list">Books</string>
+    <string name="tab_member_list">Members</string>
+    <string name="tab_transaction_list">Transactions</string>
     <string name="tab_book">Books</string>
     <string name="tab_member">Members</string>
     <string name="tab_transaction">Transactions</string>
@@ -7,10 +10,10 @@
     <string name="btn_previous">Previous</string>
     <string name="btn_next">Next</string>
     <string name="btn_last">Last</string>
-    <string name="btn_add">Add</string>
     <string name="btn_search">Search</string>
-    <string name="btn_modify">Modify</string>
-    <string name="btn_delete">Delete</string>
+    <string name="menu_save">Save</string>
+    <string name="menu_cancel">Cancel</string>
+    <string name="menu_delete">Delete</string>
     <string name="book_id">ID</string>
     <string name="book_title">Title</string>
     <string name="book_author">Author</string>
@@ -24,4 +27,5 @@
     <string name="transaction_member_id">Member ID</string>
     <string name="transaction_loan_date">Date of Loan</string>
     <string name="transaction_return_date">Date of Return</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

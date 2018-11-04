@@ -24,6 +24,8 @@
 
 package com.netikalyan.librarymanagement;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,14 +35,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.List;
+
 public class BookFragment extends Fragment {
 
     private BookViewModel mViewModel;
     private EditText editBookID, editBookTitle, editBookAuthor, editBookPrice, editBookAvailable;
-
-    public static BookFragment newInstance() {
-        return new BookFragment();
-    }
 
     @Nullable
     @Override
@@ -52,12 +52,22 @@ public class BookFragment extends Fragment {
         editBookAuthor = rootView.findViewById(R.id.editBookAuthor);
         editBookPrice = rootView.findViewById(R.id.editBookPrice);
         editBookAvailable = rootView.findViewById(R.id.editBookAvailable);
+        if (null != getArguments()) {
+            setBook((BookEntity) getArguments().getParcelable(EntityItemActivity.DB_ITEM));
+        }
         return rootView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mViewModel = ViewModelProviders.of(this).get(BookViewModel.class);
+        mViewModel.getAllBooks().observe(this, new Observer<List<BookEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<BookEntity> bookEntities) {
+
+            }
+        });
     }
 
     public void addBook(BookEntity book) {
@@ -96,7 +106,18 @@ public class BookFragment extends Fragment {
         return Integer.parseInt(editBookAvailable.getText().toString());
     }
 
-    public void setBook(BookEntity book) {
+    @NonNull
+    public BookEntity getBookDetails() {
+        BookEntity bookEntity = new BookEntity();
+        bookEntity.setBookID(getBookID());
+        bookEntity.setTitle(getBookTitle());
+        bookEntity.setAuthor(getBookAuthor());
+        bookEntity.setPrice(getBookPrice());
+        bookEntity.setAvailable(getBookAvailable());
+        return bookEntity;
+    }
+
+    private void setBook(@NonNull BookEntity book) {
         editBookID.setText(String.valueOf(book.getBookID()));
         editBookTitle.setText(book.getTitle());
         editBookAuthor.setText(book.getAuthor());

@@ -29,12 +29,16 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Date;
 
-@Entity(tableName = "Transactions", foreignKeys = {@ForeignKey(entity = MemberEntity.class, childColumns = "MemberID", parentColumns = "MemberID", onDelete = ForeignKey.NO_ACTION, onUpdate = ForeignKey.NO_ACTION), @ForeignKey(entity = BookEntity.class, childColumns = "BookID", parentColumns = "BookID")})
+@Entity(tableName = "Transactions", foreignKeys = {
+        @ForeignKey(entity = MemberEntity.class, childColumns = "MemberID", parentColumns = "MemberID", onDelete = ForeignKey.NO_ACTION, onUpdate = ForeignKey.NO_ACTION),
+        @ForeignKey(entity = BookEntity.class, childColumns = "BookID", parentColumns = "BookID")})
 @TypeConverters(DateConverter.class)
-public class TransactionEntity {
+public class TransactionEntity implements ILibraryEntity {
     @PrimaryKey
     @ColumnInfo(name = "TransactionID", typeAffinity = ColumnInfo.INTEGER)
     private int transactionID;
@@ -52,6 +56,18 @@ public class TransactionEntity {
     @ColumnInfo(name = "ReturnDate", typeAffinity = ColumnInfo.INTEGER)
     @TypeConverters(DateConverter.class)
     private Date dateOfReturn;
+
+    public TransactionEntity() {
+
+    }
+
+    public TransactionEntity(Parcel source) {
+        transactionID = source.readInt();
+        memberID = source.readInt();
+        bookID = source.readInt();
+        dateOfLoan = new Date(source.readLong());
+        dateOfReturn = new Date(source.readLong());
+    }
 
     public int getTransactionID() {
         return transactionID;
@@ -91,5 +107,31 @@ public class TransactionEntity {
 
     public void setDateOfReturn(Date dateOfReturn) {
         this.dateOfReturn = dateOfReturn;
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @Override
+        public Object createFromParcel(Parcel source) {
+            return new TransactionEntity(source);
+        }
+
+        @Override
+        public Object[] newArray(int size) {
+            return new TransactionEntity[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.transactionID);
+        dest.writeInt(this.memberID);
+        dest.writeInt(this.bookID);
+        dest.writeLong(this.dateOfLoan.getTime());
+        dest.writeLong(this.dateOfReturn.getTime());
     }
 }

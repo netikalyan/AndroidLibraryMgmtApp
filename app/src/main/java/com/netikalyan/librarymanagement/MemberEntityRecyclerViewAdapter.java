@@ -31,16 +31,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.netikalyan.librarymanagement.MemberListFragment.OnListFragmentInteractionListener;
-
 import java.util.List;
 
-public class MemberEntityRecyclerViewAdapter extends RecyclerView.Adapter<MemberEntityRecyclerViewAdapter.ViewHolder> {
+public class MemberEntityRecyclerViewAdapter
+        extends RecyclerView.Adapter<MemberEntityRecyclerViewAdapter.ViewHolder> {
 
     private List<MemberEntity> mMemberList;
     private final OnListFragmentInteractionListener mListener;
 
-    MemberEntityRecyclerViewAdapter(OnListFragmentInteractionListener listener) {
+    MemberEntityRecyclerViewAdapter(List<MemberEntity> members,
+                                    OnListFragmentInteractionListener listener) {
+        mMemberList = members;
         mListener = listener;
     }
 
@@ -71,7 +72,10 @@ public class MemberEntityRecyclerViewAdapter extends RecyclerView.Adapter<Member
 
     @Override
     public int getItemCount() {
-        return mMemberList.size();
+        if (null == mMemberList)
+            return 0;
+        else
+            return mMemberList.size();
     }
 
     void setMemberList(List<MemberEntity> memberEntities) {
@@ -89,9 +93,9 @@ public class MemberEntityRecyclerViewAdapter extends RecyclerView.Adapter<Member
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mMemberIdView = view.findViewById(R.id.textBookID);
-            mNameView = view.findViewById(R.id.textBookTitle);
-            mOtherInfoView = view.findViewById(R.id.textBookAuthor);
+            mMemberIdView = view.findViewById(R.id.textMemberID);
+            mNameView = view.findViewById(R.id.textMemberName);
+            mOtherInfoView = view.findViewById(R.id.textMemberOtherInfo);
         }
     }
 }

@@ -24,43 +24,7 @@
 
 package com.netikalyan.librarymanagement;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
+import android.os.Parcelable;
 
-import java.util.List;
-
-public class MemberViewModel extends AndroidViewModel {
-    private LiveData<List<MemberEntity>> mMemberList;
-    private LibraryRepository mRepository;
-
-    public MemberViewModel(@NonNull Application application) {
-        super(application);
-        mRepository = new LibraryRepository(application);
-    }
-
-    public LiveData<List<MemberEntity>> getAllMembers() {
-        return mRepository.getAllMembers();
-    }
-
-    public void addNewMember(MemberEntity member) {
-        mRepository.addNewMember(member);
-    }
-
-    public void updateMember(MemberEntity member) {
-        mRepository.updateMemberDetails(member);
-    }
-
-    public void deleteMember(MemberEntity member) {
-        mRepository.deleteMember(member);
-    }
-
-    public void deleteAllMembers() {
-        mRepository.deleteAllBooks();
-    }
-
-    public MemberEntity searchMember(int memberID) {
-        return mRepository.searchMember(memberID);
-    }
+public interface ILibraryEntity extends Parcelable {
 }

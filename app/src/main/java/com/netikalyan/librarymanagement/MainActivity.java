@@ -24,14 +24,19 @@
 
 package com.netikalyan.librarymanagement;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
-    private BookFragment mBookFragment;
-    private MemberFragment mMemberFragment;
-    private TransactionFragment mTransactionFragment;
+public class MainActivity extends AppCompatActivity
+        implements OnFragmentInteractionListener, OnListFragmentInteractionListener {
+    private BookListFragment mBookListFragment;
+    private MemberListFragment mMemberListFragment;
+    private TransactionListFragment mTransactionListFragment;
     private TabLayout mTabLayout;
 
     @Override
@@ -39,99 +44,88 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        mBookFragment = BookFragment.newInstance();
-        mMemberFragment = MemberFragment.newInstance();
-        mTransactionFragment = TransactionFragment.newInstance();
+        mBookListFragment = new BookListFragment();
+        mMemberListFragment = new MemberListFragment();
+        mTransactionListFragment = new TransactionListFragment();
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.navigationContainer, new NavigationFragment()).add(R.id.optionsContainer, new OptionsFragment()).add(R.id.container, mBookFragment).commitNow();
-        }
+        FloatingActionButton fabNew = findViewById(R.id.fabAddNew);
+        fabNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TabLayout.Tab tab = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition());
+                Intent intent = new Intent(getApplicationContext(), EntityItemActivity.class);
+                intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT, tab.getText().toString());
+                startActivityForResult(intent, mTabLayout.getSelectedTabPosition());
+            }
+        });
 
         mTabLayout = findViewById(R.id.tabLayout);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getText().equals(getString(R.string.tab_book))) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.container, mBookFragment).commitNow();
-                } else if (tab.getText().equals(getString(R.string.tab_member))) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.container, mMemberFragment).commitNow();
-                } else if (tab.getText().equals(getString(R.string.tab_transaction))) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.container, mTransactionFragment).commitNow();
+                if (getString(R.string.tab_book_list).equals(tab.getText().toString())) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container, mBookListFragment).commitNow();
+                } else if (getString(R.string.tab_member_list).equals(tab.getText().toString())) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container, mMemberListFragment).commitNow();
+                } else if (getString(R.string.tab_transaction_list)
+                        .equals(tab.getText().toString())) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container, mTransactionListFragment).commitNow();
                 }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                if (tab.getText().equals(getString(R.string.tab_book))) {
-                    getSupportFragmentManager().beginTransaction().remove(mBookFragment).commitNow();
-                } else if (tab.getText().equals(getString(R.string.tab_member))) {
-                    getSupportFragmentManager().beginTransaction().remove(mMemberFragment).commitNow();
-                } else if (tab.getText().equals(getString(R.string.tab_transaction))) {
-                    getSupportFragmentManager().beginTransaction().remove(mTransactionFragment).commitNow();
-                }
+
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, mBookListFragment)
+                .commitNow();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (EntityItemActivity.SAVE_SUCCESS_CODE == resultCode) {
+            switch (requestCode) {
+                case 0: // BookFragment
+                    break;
+                case 1: //MemberFragment
+                    break;
+                case 2: //TransactionFragment
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     @Override
     public void onFragmentInteraction(DBAction action) {
-        int position = mTabLayout.getSelectedTabPosition();
-        TabLayout.Tab currentTab = mTabLayout.getTabAt(position);
-        if (currentTab.getText().equals(getString(R.string.tab_book))) {
-            switch (action) {
-                case ADD:
-                    BookEntity newbook = new BookEntity();
-                    newbook.setBookID(mBookFragment.getBookID());
-                    newbook.setTitle(mBookFragment.getBookTitle());
-                    newbook.setAuthor(mBookFragment.getBookAuthor());
-                    newbook.setPrice(mBookFragment.getBookPrice());
-                    newbook.setAvailable(mBookFragment.getBookAvailable());
-                    mBookFragment.addBook(newbook);
-                    break;
-                case DELETE:
-                    BookEntity delBook = mBookFragment.searchBook(mBookFragment.getBookID());
-                    mBookFragment.deleteBook(delBook);
-                    break;
-                case MODIFY:
-                    BookEntity updateBook = mBookFragment.searchBook(mBookFragment.getBookID());
-                    updateBook.setBookID(mBookFragment.getBookID());
-                    updateBook.setTitle(mBookFragment.getBookTitle());
-                    updateBook.setAuthor(mBookFragment.getBookAuthor());
-                    updateBook.setPrice(mBookFragment.getBookPrice());
-                    updateBook.setAvailable(mBookFragment.getBookAvailable());
-                    mBookFragment.modifyBook(updateBook);
-                    break;
-                case SEARCH:
-                    BookEntity searchBook = mBookFragment.searchBook(mBookFragment.getBookID());
-                    mBookFragment.setBook(searchBook);
-                    break;
-            }
-        } else if (currentTab.getText().equals(getString(R.string.tab_member))) {
-            switch (action) {
-                case ADD:
-                    break;
-                case DELETE:
-                    break;
-                case MODIFY:
-                    break;
-                case SEARCH:
-                    break;
-            }
-        } else if (currentTab.getText().equals(getString(R.string.tab_transaction))) {
-            switch (action) {
-                case ADD:
-                    break;
-                case DELETE:
-                    break;
-                case MODIFY:
-                    break;
-                case SEARCH:
-                    break;
-            }
+    }
+
+    @Override
+    public void onListFragmentInteraction(ILibraryEntity item) {
+        Intent intent = new Intent(getApplicationContext(), EntityItemActivity.class);
+        if (item instanceof BookEntity) {
+            intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT, getString(R.string.tab_book));
+            intent.putExtra(EntityItemActivity.DB_ACTION, DBAction.MODIFY.ordinal());
+        } else if (item instanceof MemberEntity) {
+            intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT, getString(R.string.tab_member));
+            intent.putExtra(EntityItemActivity.DB_ACTION, DBAction.MODIFY.ordinal());
+        } else if (item instanceof TransactionEntity) {
+            intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT,
+                    getString(R.string.tab_transaction));
+            intent.putExtra(EntityItemActivity.DB_ACTION, DBAction.MODIFY.ordinal());
         }
+        intent.putExtra(EntityItemActivity.DB_ITEM, item);
+        startActivityForResult(intent, mTabLayout.getSelectedTabPosition());
     }
 }

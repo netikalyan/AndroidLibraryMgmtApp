@@ -31,16 +31,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.netikalyan.librarymanagement.BookListFragment.OnListFragmentInteractionListener;
-
 import java.util.List;
 
-public class BookEntityRecyclerViewAdapter extends RecyclerView.Adapter<BookEntityRecyclerViewAdapter.ViewHolder> {
+public class BookEntityRecyclerViewAdapter
+        extends RecyclerView.Adapter<BookEntityRecyclerViewAdapter.ViewHolder> {
 
     private List<BookEntity> mBookList;
     private final OnListFragmentInteractionListener mListener;
 
-    BookEntityRecyclerViewAdapter(OnListFragmentInteractionListener listener) {
+    BookEntityRecyclerViewAdapter(List<BookEntity> books,
+                                  OnListFragmentInteractionListener listener) {
+        mBookList = books;
         mListener = listener;
     }
 
@@ -73,7 +74,10 @@ public class BookEntityRecyclerViewAdapter extends RecyclerView.Adapter<BookEnti
 
     @Override
     public int getItemCount() {
-        return mBookList.size();
+        if (null == mBookList)
+            return 0;
+        else
+            return mBookList.size();
     }
 
     void setBookList(List<BookEntity> bookEntities) {

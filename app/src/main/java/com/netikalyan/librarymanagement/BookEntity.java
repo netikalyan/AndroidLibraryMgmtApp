@@ -27,9 +27,11 @@ package com.netikalyan.librarymanagement;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 @Entity(tableName = "Books")
-public class BookEntity {
+public class BookEntity implements ILibraryEntity {
     @PrimaryKey
     @ColumnInfo(name = "BookID", typeAffinity = ColumnInfo.INTEGER)
     private int bookID;
@@ -45,6 +47,18 @@ public class BookEntity {
 
     @ColumnInfo(name = "Available", typeAffinity = ColumnInfo.INTEGER)
     private int available;
+
+    public BookEntity(Parcel source) {
+        bookID = source.readInt();
+        title = source.readString();
+        author = source.readString();
+        price = source.readFloat();
+        available = source.readInt();
+    }
+
+    public BookEntity() {
+
+    }
 
     public int getBookID() {
         return bookID;
@@ -84,5 +98,31 @@ public class BookEntity {
 
     public void setAvailable(int available) {
         this.available = available;
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @Override
+        public Object createFromParcel(Parcel source) {
+            return new BookEntity(source);
+        }
+
+        @Override
+        public Object[] newArray(int size) {
+            return new BookEntity[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.bookID);
+        dest.writeString(this.title);
+        dest.writeString(this.author);
+        dest.writeFloat(this.price);
+        dest.writeInt(this.available);
     }
 }

@@ -32,7 +32,8 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
-@Database(entities = {BookEntity.class, MemberEntity.class, TransactionEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {BookEntity.class, MemberEntity.class,
+        TransactionEntity.class}, version = 1, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class LibraryDatabase extends RoomDatabase {
     public abstract BookDao bookDao();
@@ -43,16 +44,19 @@ public abstract class LibraryDatabase extends RoomDatabase {
 
     private static volatile LibraryDatabase INSTANCE;
 
+    // TODO: Added allowMainThreadQueries to avoid crash. Have to remove it later. Cannot access database on the main thread since it may potentially lock the UI for a long period of time.
     public static LibraryDatabase getDatabase(Application application) {
         if (null == INSTANCE) {
             synchronized (LibraryDatabase.class) {
                 if (null == INSTANCE) {
-                    INSTANCE = Room.databaseBuilder(application.getApplicationContext(), LibraryDatabase.class, "LibraryDB").addCallback(new Callback() {
-                        @Override
-                        public void onOpen(@NonNull SupportSQLiteDatabase db) {
-                            super.onOpen(db);
-                        }
-                    }).build();
+                    INSTANCE = Room.databaseBuilder(application.getApplicationContext(),
+                            LibraryDatabase.class, "LibraryDB").allowMainThreadQueries()
+                            .addCallback(new Callback() {
+                                @Override
+                                public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                                    super.onOpen(db);
+                                }
+                            }).build();
                 }
             }
         }

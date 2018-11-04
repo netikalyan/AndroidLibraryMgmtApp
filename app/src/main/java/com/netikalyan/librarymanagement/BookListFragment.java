@@ -42,6 +42,7 @@ import java.util.List;
 public class BookListFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private BookEntityRecyclerViewAdapter mAdapter;
+    private BookViewModel mViewModel;
 
     public BookListFragment() {
     }
@@ -60,22 +61,18 @@ public class BookListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            mAdapter = new BookEntityRecyclerViewAdapter(mListener);
+            mViewModel = ViewModelProviders.of(this).get(BookViewModel.class);
+            mViewModel.getAllBooks().observe(this, new Observer<List<BookEntity>>() {
+                @Override
+                public void onChanged(@Nullable List<BookEntity> bookEntities) {
+                    mAdapter.setBookList(bookEntities);
+                }
+            });
+            mAdapter = new BookEntityRecyclerViewAdapter(mViewModel.getAllBooks().getValue(),
+                    mListener);
             recyclerView.setAdapter(mAdapter);
         }
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        BookViewModel mViewModel = ViewModelProviders.of(this).get(BookViewModel.class);
-        mViewModel.getAllBooks().observe(this, new Observer<List<BookEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<BookEntity> bookEntities) {
-                mAdapter.setBookList(bookEntities);
-            }
-        });
     }
 
     @Override
@@ -93,9 +90,5 @@ public class BookListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(BookEntity item);
     }
 }

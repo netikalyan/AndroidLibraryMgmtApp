@@ -42,6 +42,7 @@ import java.util.List;
 public class MemberListFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private MemberEntityRecyclerViewAdapter mAdapter;
+    private MemberViewModel mViewModel;
 
     public MemberListFragment() {
     }
@@ -60,22 +61,18 @@ public class MemberListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            mAdapter = new MemberEntityRecyclerViewAdapter(mListener);
+            mViewModel = ViewModelProviders.of(this).get(MemberViewModel.class);
+            mViewModel.getAllMembers().observe(this, new Observer<List<MemberEntity>>() {
+                @Override
+                public void onChanged(@Nullable List<MemberEntity> memberEntities) {
+                    mAdapter.setMemberList(memberEntities);
+                }
+            });
+            mAdapter = new MemberEntityRecyclerViewAdapter(mViewModel.getAllMembers().getValue(),
+                    mListener);
             recyclerView.setAdapter(mAdapter);
         }
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        MemberViewModel mViewModel = ViewModelProviders.of(this).get(MemberViewModel.class);
-        mViewModel.getAllMembers().observe(this, new Observer<List<MemberEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<MemberEntity> memberEntities) {
-                mAdapter.setMemberList(memberEntities);
-            }
-        });
     }
 
     @Override
@@ -93,9 +90,5 @@ public class MemberListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(MemberEntity item);
     }
 }
