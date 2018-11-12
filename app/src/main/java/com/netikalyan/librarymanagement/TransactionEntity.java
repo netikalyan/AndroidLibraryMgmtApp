@@ -27,15 +27,17 @@ package com.netikalyan.librarymanagement;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import java.util.Date;
 
 @Entity(tableName = "Transactions", foreignKeys = {
-        @ForeignKey(entity = MemberEntity.class, childColumns = "MemberID", parentColumns = "MemberID", onDelete = ForeignKey.NO_ACTION, onUpdate = ForeignKey.NO_ACTION),
+        @ForeignKey(entity = MemberEntity.class, childColumns = "MemberID", parentColumns = "MemberID"),
         @ForeignKey(entity = BookEntity.class, childColumns = "BookID", parentColumns = "BookID")})
 @TypeConverters(DateConverter.class)
 public class TransactionEntity implements ILibraryEntity {
@@ -46,8 +48,14 @@ public class TransactionEntity implements ILibraryEntity {
     @ColumnInfo(name = "MemberID", typeAffinity = ColumnInfo.INTEGER, index = true)
     private int memberID;
 
+    @Ignore
+    private String memberName;
+
     @ColumnInfo(name = "BookID", typeAffinity = ColumnInfo.INTEGER, index = true)
     private int bookID;
+
+    @Ignore
+    private String bookTitle;
 
     @ColumnInfo(name = "LoanDate", typeAffinity = ColumnInfo.INTEGER)
     @TypeConverters(DateConverter.class)
@@ -85,6 +93,14 @@ public class TransactionEntity implements ILibraryEntity {
         this.memberID = memberID;
     }
 
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
+    public String getMemberName() {
+        return this.memberName;
+    }
+
     public int getBookID() {
         return bookID;
     }
@@ -93,19 +109,27 @@ public class TransactionEntity implements ILibraryEntity {
         this.bookID = bookID;
     }
 
+    public void setBookTitle(String title) {
+        this.bookTitle = title;
+    }
+
+    public String getBookTitle() {
+        return this.bookTitle;
+    }
+
     public Date getDateOfLoan() {
         return dateOfLoan;
     }
 
-    public void setDateOfLoan(Date dateOfLoan) {
+    public void setDateOfLoan(@Nullable Date dateOfLoan) {
         this.dateOfLoan = dateOfLoan;
     }
 
     public Date getDateOfReturn() {
-        return dateOfLoan;
+        return dateOfReturn;
     }
 
-    public void setDateOfReturn(Date dateOfReturn) {
+    public void setDateOfReturn(@Nullable Date dateOfReturn) {
         this.dateOfReturn = dateOfReturn;
     }
 

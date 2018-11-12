@@ -23,8 +23,8 @@
     <string name="member_name">Name</string>
     <string name="member_info">Other Info</string>
     <string name="transaction_id">ID</string>
-    <string name="transaction_book_id">Book ID</string>
-    <string name="transaction_member_id">Member ID</string>
+    <string name="transaction_book_id">Book</string>
+    <string name="transaction_member_id">Member</string>
     <string name="transaction_loan_date">Date of Loan</string>
     <string name="transaction_return_date">Date of Return</string>
     <string name="title_activity_main2">Main2Activity</string>

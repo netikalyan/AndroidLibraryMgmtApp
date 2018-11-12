@@ -53,4 +53,7 @@ public interface TransactionDao {
 
     @Query("SELECT * FROM Transactions WHERE TransactionID=:transactionID")
     TransactionEntity search(int transactionID);
+
+    //@Query("SELECT * FROM TRANSACTIONS WHERE LoanDate=:loanDate")
+    //TransactionEntity[] search(Date loanDate);
 }

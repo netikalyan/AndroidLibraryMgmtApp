@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,8 @@ public class BookFragment extends Fragment {
         mViewModel.getAllBooks().observe(this, new Observer<List<BookEntity>>() {
             @Override
             public void onChanged(@Nullable List<BookEntity> bookEntities) {
-
+                // TODO: anything to do here ?
+                Log.d(getString(R.string.app_name), "Change in Books. Observer called");
             }
         });
     }
@@ -75,7 +77,7 @@ public class BookFragment extends Fragment {
     }
 
     public BookEntity searchBook(int bookID) {
-        return mViewModel.searchBook(bookID);
+        return mViewModel.searchBookByID(bookID);
     }
 
     public void modifyBook(BookEntity book) {
@@ -86,28 +88,43 @@ public class BookFragment extends Fragment {
         mViewModel.deleteBook(book);
     }
 
-    public int getBookID() {
-        return Integer.parseInt(editBookID.getText().toString());
+    public int getBookID() throws LibraryException {
+        String bookID = editBookID.getText().toString();
+        if (!bookID.isEmpty())
+            return Integer.parseInt(bookID);
+        throw new LibraryException(LibraryException.Constants.BOOK_ID_MISSING);
     }
 
-    public String getBookTitle() {
-        return editBookTitle.getText().toString();
+    public String getBookTitle() throws LibraryException {
+        String title = editBookTitle.getText().toString();
+        if (!title.isEmpty())
+            return title;
+        throw new LibraryException(LibraryException.Constants.BOOK_TITLE_MISSING);
     }
 
-    public String getBookAuthor() {
-        return editBookAuthor.getText().toString();
+    public String getBookAuthor() throws LibraryException {
+        String author = editBookAuthor.getText().toString();
+        if (!author.isEmpty())
+            return author;
+        throw new LibraryException(LibraryException.Constants.BOOK_AUTHOR_MISSING);
     }
 
-    public float getBookPrice() {
-        return Float.parseFloat(editBookPrice.getText().toString());
+    public float getBookPrice() throws LibraryException {
+        String price = editBookPrice.getText().toString();
+        if (!price.isEmpty())
+            return Float.parseFloat(editBookPrice.getText().toString());
+        throw new LibraryException(LibraryException.Constants.BOOK_PRICE_MISSING);
     }
 
-    public int getBookAvailable() {
-        return Integer.parseInt(editBookAvailable.getText().toString());
+    public int getBookAvailable() throws LibraryException {
+        String availableCopies = editBookAvailable.getText().toString();
+        if (!availableCopies.isEmpty())
+            return Integer.parseInt(availableCopies);
+        throw new LibraryException(LibraryException.Constants.BOOK_AVAILABLE_COPIES_MISSING);
     }
 
     @NonNull
-    public BookEntity getBookDetails() {
+    public BookEntity getBookDetails() throws LibraryException {
         BookEntity bookEntity = new BookEntity();
         bookEntity.setBookID(getBookID());
         bookEntity.setTitle(getBookTitle());

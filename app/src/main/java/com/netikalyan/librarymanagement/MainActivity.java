@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (EntityItemActivity.SAVE_SUCCESS_CODE == resultCode) {
+        if (EntityItemActivity.CANCEL_CODE != resultCode) {
             switch (requestCode) {
                 case 0: // BookFragment
                     break;

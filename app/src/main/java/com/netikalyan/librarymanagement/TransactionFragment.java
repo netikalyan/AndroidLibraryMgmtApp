@@ -30,24 +30,29 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
 public class TransactionFragment extends Fragment {
 
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
     private TransactionViewModel mViewModel;
     private BookViewModel mBookViewModel;
     private MemberViewModel mMemberViewModel;
-    private EditText editTransactionID, editTransactionLoanDate, editTransactionReturnDate,
-            editTransactionBookName, editTransactionMemberName;
+    private EditText editTransactionID, editTransactionLoanDate, editTransactionReturnDate;
+    private AutoCompleteTextView editTransactionBookName, editTransactionMemberName;
     private TextView textTransactionBookID, textTransactionMemberID;
 
     @Nullable
@@ -62,9 +67,6 @@ public class TransactionFragment extends Fragment {
         editTransactionMemberName = rootView.findViewById(R.id.editTransactionMemberName);
         editTransactionLoanDate = rootView.findViewById(R.id.editTransactionLoanDate);
         editTransactionReturnDate = rootView.findViewById(R.id.editTransactionReturnDate);
-        if (null != getArguments()) {
-            setTransaction((TransactionEntity) getArguments().getParcelable(EntityItemActivity.DB_ITEM));
-        }
         return rootView;
     }
 
@@ -77,20 +79,74 @@ public class TransactionFragment extends Fragment {
         mViewModel.getAllTransactions().observe(this, new Observer<List<TransactionEntity>>() {
             @Override
             public void onChanged(@Nullable List<TransactionEntity> transactionEntities) {
-
+                // TODO: anything to do here ?
             }
         });
+        mBookViewModel.getAllBooks().observe(this, new Observer<List<BookEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<BookEntity> bookEntities) {
+                if (null != bookEntities && 0 < bookEntities.size()) {
+                    editTransactionBookName.setAdapter(
+                            new ArrayAdapter<>(requireContext(),
+                                    android.R.layout.simple_list_item_1,
+                                    bookEntities));
+                    editTransactionBookName.setOnItemClickListener(
+                            new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view,
+                                                        int position,
+                                                        long id) {
+                                    Log.d(getString(R.string.app_name),
+                                            parent.getItemAtPosition(position).toString());
+                                    BookEntity[] book = mBookViewModel.searchBookByTitle(
+                                            editTransactionBookName.getText().toString());
+                                    textTransactionBookID
+                                            .setText(String.valueOf(book[0].getBookID()));
+                                }
+                            });
+                }
+            }
+        });
+        mMemberViewModel.getAllMembers().observe(this, new Observer<List<MemberEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<MemberEntity> memberEntities) {
+                if (null != memberEntities && 0 < memberEntities.size()) {
+                    editTransactionMemberName.setAdapter(
+                            new ArrayAdapter<>(requireContext(),
+                                    android.R.layout.simple_list_item_1,
+                                    memberEntities));
+                    editTransactionMemberName.setOnItemClickListener(
+                            new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view,
+                                                        int position,
+                                                        long id) {
+                                    Log.d(getString(R.string.app_name),
+                                            parent.getItemAtPosition(position).toString());
+                                    MemberEntity[] member = mMemberViewModel.searchMemberByName(
+                                            editTransactionMemberName.getText().toString());
+                                    textTransactionMemberID
+                                            .setText(String.valueOf(member[0].getMemberID()));
+                                }
+                            });
+                }
+            }
+        });
+        if (null != getArguments()) {
+            setTransaction(
+                    (TransactionEntity) getArguments().getParcelable(EntityItemActivity.DB_ITEM));
+        }
     }
 
-    public void loanBookToMember(TransactionEntity transaction) {
+    public void loanBookToMember(@NonNull TransactionEntity transaction) {
         mViewModel.addNewTransaction(transaction);
     }
 
-    public void returnBookToLibrary(TransactionEntity transaction) {
+    public void returnBookToLibrary(@NonNull TransactionEntity transaction) {
         mViewModel.updateTransaction(transaction);
     }
 
-    public void deleteTransaction(TransactionEntity transaction) {
+    public void deleteTransaction(@NonNull TransactionEntity transaction) {
         mViewModel.addNewTransaction(transaction);
     }
 
@@ -98,50 +154,132 @@ public class TransactionFragment extends Fragment {
         return mViewModel.searcbTransaction(transactionID);
     }
 
-    @Nullable
-    public TransactionEntity getTransactionDetails() {
-        try {
-            TransactionEntity transactionEntity = new TransactionEntity();
+    @NonNull
+    public TransactionEntity getTransactionDetails(boolean isNewTransaction)
+            throws LibraryException {
+        TransactionEntity transactionEntity = new TransactionEntity();
+        if (-1 != getTransactionID())
             transactionEntity.setTransactionID(getTransactionID());
+        else
+            throw new LibraryException(LibraryException.Constants.TRANSACTION_ID_MISSING);
+        if (-1 != getTransactionBookID())
             transactionEntity.setBookID(getTransactionBookID());
+        else
+            throw new LibraryException(LibraryException.Constants.BOOK_ID_MISSING);
+        if (null != getTransactionBookTitle())
+            transactionEntity.setBookTitle(getTransactionBookTitle());
+        else
+            throw new LibraryException(LibraryException.Constants.BOOK_TITLE_MISSING);
+        if (-1 != getTransactionMemberID())
             transactionEntity.setMemberID(getTransactionMemberID());
+        else
+            throw new LibraryException(LibraryException.Constants.MEMBER_ID_MISSING);
+        if (null != getTransactionMemberName())
+            transactionEntity.setMemberName(getTransactionMemberName());
+        else
+            throw new LibraryException(LibraryException.Constants.MEMBER_NAME_MISSING);
+        if (null != getTransactionLoanDate())
             transactionEntity.setDateOfLoan(getTransactionLoanDate());
+        else
+            throw new LibraryException(LibraryException.Constants.TRANSACTION_LOAN_DATE_MISSING);
+        if (!isNewTransaction && null == getTransactionReturnDate())
+            throw new LibraryException(LibraryException.Constants.TRANSACTION_RETURN_DATE_MISSING);
+        else
             transactionEntity.setDateOfReturn(getTransactionReturnDate());
-            return transactionEntity;
-        } catch (ParseException e) {
-            return null;
-        }
+        return transactionEntity;
     }
 
     public int getTransactionID() {
-        return Integer.parseInt(editTransactionID.getText().toString());
+        if (!editTransactionID.getText().toString().isEmpty())
+            return Integer.parseInt(editTransactionID.getText().toString());
+        else
+            Log.e(getString(R.string.app_name), "Missing Transaction ID");
+        return -1;
     }
 
     public int getTransactionMemberID() {
-        return Integer.parseInt(textTransactionMemberID.getText().toString());
+        if (!textTransactionMemberID.getText().toString().isEmpty())
+            return Integer.parseInt(textTransactionMemberID.getText().toString());
+        else
+            Log.e(getString(R.string.app_name), "Missing Member ID");
+        return -1;
+    }
+
+    @Nullable
+    public String getTransactionMemberName() {
+        if (!editTransactionMemberName.getText().toString().isEmpty())
+            return editTransactionMemberName.getText().toString();
+        else
+            Log.e(getString(R.string.app_name), "Missing Member Name");
+        return null;
     }
 
     public int getTransactionBookID() {
-        return Integer.parseInt(textTransactionBookID.getText().toString());
+        if (!textTransactionBookID.getText().toString().isEmpty())
+            return Integer.parseInt(textTransactionBookID.getText().toString());
+        else
+            Log.e(getString(R.string.app_name), "Missing Book ID");
+        return -1;
     }
 
-    public Date getTransactionLoanDate() throws ParseException {
-        return DateFormat.getInstance().parse(editTransactionLoanDate.getText().toString());
+    @Nullable
+    public String getTransactionBookTitle() {
+        if (!editTransactionBookName.getText().toString().isEmpty())
+            return editTransactionBookName.getText().toString();
+        else
+            Log.e(getString(R.string.app_name), "Missing Book Name");
+        return null;
     }
 
-    public Date getTransactionReturnDate() throws ParseException {
-        return DateFormat.getInstance().parse(editTransactionReturnDate.getText().toString());
+    @Nullable
+    public Date getTransactionLoanDate() {
+        Log.d(getString(R.string.app_name),
+                "Loan Date = " + editTransactionLoanDate.getText().toString());
+        if (!editTransactionLoanDate.getText().toString().isEmpty()) {
+            try {
+                return DateFormat.getDateFormat(this.getContext())
+                        .parse(editTransactionLoanDate.getText().toString());
+            } catch (ParseException e) {
+                Log.e(getString(R.string.app_name), "Parsing error in loan date " + e.getMessage());
+            }
+        } else {
+            Log.e(getString(R.string.app_name), "Missing Loan Date");
+        }
+        return null;
+    }
+
+    @Nullable
+    public Date getTransactionReturnDate() {
+        Log.v(getString(R.string.app_name),
+                "Return Date = " + editTransactionReturnDate.getText().toString());
+        if (null != editTransactionReturnDate.getText() &&
+                0 != editTransactionReturnDate.getText().length()) {
+            try {
+                return DateFormat.getDateFormat(this.getContext())
+                        .parse(editTransactionReturnDate.getText().toString());
+            } catch (ParseException e) {
+                Log.e(getString(R.string.app_name),
+                        "Parsing error in return date " + e.getMessage());
+            }
+        } else {
+            Log.e(getString(R.string.app_name), "Missing Return Date");
+        }
+        return null;
     }
 
     private void setTransaction(@NonNull TransactionEntity transaction) {
         editTransactionID.setText(String.valueOf(transaction.getTransactionID()));
-        textTransactionBookID.setText(transaction.getBookID());
-        BookEntity bookEntity = mBookViewModel.searchBook(transaction.getBookID());
+        textTransactionBookID.setText(String.valueOf(transaction.getBookID()));
+        BookEntity bookEntity = mBookViewModel.searchBookByID(transaction.getBookID());
         editTransactionBookName.setText(bookEntity.getTitle());
-        textTransactionMemberID.setText(transaction.getMemberID());
+        transaction.setBookTitle(bookEntity.getTitle());
+        textTransactionMemberID.setText(String.valueOf(transaction.getMemberID()));
         MemberEntity memberEntity = mMemberViewModel.searchMember(transaction.getMemberID());
         editTransactionMemberName.setText(memberEntity.getName());
-        editTransactionLoanDate.setText(String.valueOf(transaction.getDateOfLoan()));
-        editTransactionReturnDate.setText(String.valueOf(transaction.getDateOfReturn()));
+        transaction.setMemberName(memberEntity.getName());
+        editTransactionLoanDate
+                .setText(DateFormat.format(DATE_FORMAT, transaction.getDateOfLoan()));
+        editTransactionReturnDate
+                .setText(DateFormat.format(DATE_FORMAT, transaction.getDateOfReturn()));
     }
 }

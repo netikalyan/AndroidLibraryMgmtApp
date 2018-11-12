@@ -52,5 +52,11 @@ public interface BookDao {
     void deleteBook(BookEntity book);
 
     @Query("SELECT * FROM Books WHERE BookID=:bookID")
-    BookEntity searchBook(int bookID);
+    BookEntity searchByID(int bookID);
+
+    @Query("SELECT * FROM Books WHERE Title LIKE :title ORDER BY BookID ASC")
+    BookEntity[] searchByTitle(String title);
+
+    @Query("SELECT * FROM Books WHERE Author LIKE :name ORDER BY BookID ASC")
+    BookEntity[] searchByAuthor(String name);
 }

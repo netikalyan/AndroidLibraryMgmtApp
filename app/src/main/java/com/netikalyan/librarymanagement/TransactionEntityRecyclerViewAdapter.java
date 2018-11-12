@@ -25,7 +25,9 @@
 package com.netikalyan.librarymanagement;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +38,12 @@ import java.util.List;
 public class TransactionEntityRecyclerViewAdapter
         extends RecyclerView.Adapter<TransactionEntityRecyclerViewAdapter.ViewHolder> {
 
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
     private List<TransactionEntity> mTransactionList;
     private final OnListFragmentInteractionListener mListener;
 
-    TransactionEntityRecyclerViewAdapter(List<TransactionEntity> transactions,
-                                         OnListFragmentInteractionListener listener) {
+    TransactionEntityRecyclerViewAdapter(@Nullable List<TransactionEntity> transactions,
+                                         @NonNull OnListFragmentInteractionListener listener) {
         mTransactionList = transactions;
         mListener = listener;
     }
@@ -57,20 +60,20 @@ public class TransactionEntityRecyclerViewAdapter
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.mItem = mTransactionList.get(position);
         holder.mTransactionIdView
-                .setText(String.valueOf(mTransactionList.get(position).getBookID()));
-        holder.mBookView.setText(mTransactionList.get(position).getBookID());
-        holder.mMemberView.setText(mTransactionList.get(position).getMemberID());
-        holder.mLoanDateView
-                .setText(String.valueOf(mTransactionList.get(position).getDateOfLoan()));
-        holder.mReturnDateView
-                .setText(String.valueOf(mTransactionList.get(position).getDateOfReturn()));
+                .setText(String.valueOf(mTransactionList.get(position).getTransactionID()));
+        holder.mBookNameView.setText(mTransactionList.get(position).getBookTitle());
+        holder.mBookIDView.setText(String.valueOf(mTransactionList.get(position).getBookID()));
+        holder.mMemberNameView.setText(mTransactionList.get(position).getMemberName());
+        holder.mMemberIDView.setText(String.valueOf(mTransactionList.get(position).getMemberID()));
+        holder.mLoanDateView.setText(
+                DateFormat.format(DATE_FORMAT, mTransactionList.get(position).getDateOfLoan()));
+        holder.mReturnDateView.setText(
+                DateFormat.format(DATE_FORMAT, mTransactionList.get(position).getDateOfReturn()));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mListener) {
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
+                mListener.onListFragmentInteraction(holder.mItem);
             }
         });
     }
@@ -83,16 +86,44 @@ public class TransactionEntityRecyclerViewAdapter
             return mTransactionList.size();
     }
 
-    void setTransactionList(List<TransactionEntity> transactionEntities) {
-        mTransactionList = transactionEntities;
-        notifyDataSetChanged();
+    void setTransactionList(@Nullable List<TransactionEntity> transactionEntities) {
+        if (null != transactionEntities) {
+            mTransactionList = transactionEntities;
+            notifyDataSetChanged();
+        }
+    }
+
+    void setBookList(@NonNull List<BookEntity> bookEntities) {
+        if (null != mTransactionList) {
+            for (TransactionEntity entity : mTransactionList) {
+                for (BookEntity book : bookEntities) {
+                    if (book.getBookID() == entity.getBookID())
+                        entity.setBookTitle(book.getTitle());
+                }
+            }
+            notifyDataSetChanged();
+        }
+    }
+
+    void setMemberList(@NonNull List<MemberEntity> memberEntities) {
+        if (null != mTransactionList) {
+            for (TransactionEntity entity : mTransactionList) {
+                for (MemberEntity member : memberEntities) {
+                    if (member.getMemberID() == entity.getMemberID())
+                        entity.setMemberName(member.getName());
+                }
+            }
+            notifyDataSetChanged();
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
         final TextView mTransactionIdView;
-        final TextView mBookView;
-        final TextView mMemberView;
+        final TextView mBookNameView;
+        final TextView mBookIDView;
+        final TextView mMemberNameView;
+        final TextView mMemberIDView;
         final TextView mLoanDateView;
         final TextView mReturnDateView;
         TransactionEntity mItem;
@@ -101,8 +132,10 @@ public class TransactionEntityRecyclerViewAdapter
             super(view);
             mView = view;
             mTransactionIdView = view.findViewById(R.id.textTransactionID);
-            mBookView = view.findViewById(R.id.textTransactionBookID);
-            mMemberView = view.findViewById(R.id.textTransactionMemberID);
+            mBookNameView = view.findViewById(R.id.textTransactionBookName);
+            mBookIDView = view.findViewById(R.id.textTransactionBookID);
+            mMemberNameView = view.findViewById(R.id.textTransactionMemberName);
+            mMemberIDView = view.findViewById(R.id.textTransactionMemberID);
             mLoanDateView = view.findViewById(R.id.textTransactionLoanDate);
             mReturnDateView = view.findViewById(R.id.textTransactionReturnDate);
         }

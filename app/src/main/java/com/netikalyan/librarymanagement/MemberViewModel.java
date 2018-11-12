@@ -28,6 +28,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.List;
 
@@ -37,11 +38,13 @@ public class MemberViewModel extends AndroidViewModel {
 
     public MemberViewModel(@NonNull Application application) {
         super(application);
+        Log.e(application.getString(R.string.app_name), "BookViewModel");
         mRepository = new LibraryRepository(application);
+        mMemberList = mRepository.getAllMembers();
     }
 
     public LiveData<List<MemberEntity>> getAllMembers() {
-        return mRepository.getAllMembers();
+        return mMemberList;
     }
 
     public void addNewMember(MemberEntity member) {
@@ -62,5 +65,9 @@ public class MemberViewModel extends AndroidViewModel {
 
     public MemberEntity searchMember(int memberID) {
         return mRepository.searchMember(memberID);
+    }
+
+    public MemberEntity[] searchMemberByName(String memberName) {
+        return mRepository.searchMemberByName(memberName);
     }
 }

@@ -72,8 +72,16 @@ public class LibraryRepository {
         mBookDao.deleteAll();
     }
 
-    public BookEntity searchBook(int bookID) {
-        return mBookDao.searchBook(bookID);
+    public BookEntity searchBookByID(int bookID) {
+        return mBookDao.searchByID(bookID);
+    }
+
+    public BookEntity[] searchBookByTitle(String title) {
+        return mBookDao.searchByTitle(title);
+    }
+
+    public BookEntity[] searchBookByAuthor(String author) {
+        return mBookDao.searchByAuthor(author);
     }
 
     /**
@@ -101,6 +109,10 @@ public class LibraryRepository {
 
     public MemberEntity searchMember(int memberID) {
         return mMemberDao.searchMember(memberID);
+    }
+
+    public MemberEntity[] searchMemberByName(String memberName) {
+        return mMemberDao.searchMemberByName(memberName);
     }
 
     /**

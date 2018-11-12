@@ -8,37 +8,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TableRow>
+        <TableRow android:layout_marginVertical="4dp">
 
-            <TextView android:text="@string/transaction_id" />
+            <TextView
+                android:layout_marginHorizontal="8dp"
+                android:text="@string/transaction_id" />
 
             <TextView android:id="@+id/textTransactionID" />
         </TableRow>
 
+
+        <TableRow android:layout_marginVertical="4dp">
+
+            <TextView
+                android:layout_marginHorizontal="8dp"
+                android:text="@string/transaction_book_id" />
+
+            <TextView android:id="@+id/textTransactionBookName" />
+        </TableRow>
+
         <TableRow>
 
-            <TextView android:text="@string/transaction_book_id" />
+            <TextView android:layout_marginHorizontal="4dp" />
 
             <TextView android:id="@+id/textTransactionBookID" />
         </TableRow>
 
+        <TableRow android:layout_marginVertical="4dp">
+
+            <TextView
+                android:layout_marginHorizontal="8dp"
+                android:text="@string/transaction_member_id" />
+
+            <TextView android:id="@+id/textTransactionMemberName" />
+        </TableRow>
+
         <TableRow>
 
-            <TextView android:text="@string/transaction_member_id" />
+            <TextView />
 
             <TextView android:id="@+id/textTransactionMemberID" />
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginVertical="4dp">
 
-            <TextView android:text="@string/transaction_loan_date" />
+            <TextView
+                android:layout_marginHorizontal="8dp"
+                android:text="@string/transaction_loan_date" />
 
             <TextView android:id="@+id/textTransactionLoanDate" />
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_marginVertical="4dp">
 
-            <TextView android:text="@string/transaction_return_date" />
+            <TextView
+                android:layout_marginHorizontal="8dp"
+                android:text="@string/transaction_return_date" />
 
             <TextView android:id="@+id/textTransactionReturnDate" />
         </TableRow>

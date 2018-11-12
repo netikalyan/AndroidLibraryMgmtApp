@@ -42,7 +42,6 @@ import java.util.List;
 public class TransactionListFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private TransactionEntityRecyclerViewAdapter mAdapter;
-    private TransactionViewModel mViewModel;
 
     public TransactionListFragment() {
     }
@@ -61,16 +60,41 @@ public class TransactionListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            mViewModel = ViewModelProviders.of(this).get(TransactionViewModel.class);
-            mViewModel.getAllTransactions().observe(this, new Observer<List<TransactionEntity>>() {
+
+            TransactionViewModel transactionViewModel =
+                    ViewModelProviders.of(this).get(TransactionViewModel.class);
+            transactionViewModel.getAllTransactions()
+                    .observe(this, new Observer<List<TransactionEntity>>() {
+                        @Override
+                        public void onChanged(
+                                @Nullable List<TransactionEntity> transactionEntities) {
+                            if (null != transactionEntities && 0 < transactionEntities.size())
+                                mAdapter.setTransactionList(transactionEntities);
+                        }
+                    });
+
+            mAdapter = new TransactionEntityRecyclerViewAdapter(
+                    transactionViewModel.getAllTransactions().getValue(), mListener);
+            recyclerView.setAdapter(mAdapter);
+
+            BookViewModel bookViewModel = ViewModelProviders.of(this).get(BookViewModel.class);
+            bookViewModel.getAllBooks().observe(this, new Observer<List<BookEntity>>() {
                 @Override
-                public void onChanged(@Nullable List<TransactionEntity> transactionEntities) {
-                    mAdapter.setTransactionList(transactionEntities);
+                public void onChanged(@Nullable List<BookEntity> bookEntities) {
+                    if (null != bookEntities && 0 < bookEntities.size())
+                        mAdapter.setBookList(bookEntities);
                 }
             });
-            mAdapter = new TransactionEntityRecyclerViewAdapter(
-                    mViewModel.getAllTransactions().getValue(), mListener);
-            recyclerView.setAdapter(mAdapter);
+
+            MemberViewModel memberViewModel =
+                    ViewModelProviders.of(this).get(MemberViewModel.class);
+            memberViewModel.getAllMembers().observe(this, new Observer<List<MemberEntity>>() {
+                @Override
+                public void onChanged(@Nullable List<MemberEntity> memberEntities) {
+                    if (null != memberEntities && 0 < memberEntities.size())
+                        mAdapter.setMemberList(memberEntities);
+                }
+            });
         }
         return view;
     }

@@ -29,6 +29,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "Books")
 public class BookEntity implements ILibraryEntity {
@@ -58,6 +59,12 @@ public class BookEntity implements ILibraryEntity {
 
     public BookEntity() {
 
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return this.title;
     }
 
     public int getBookID() {

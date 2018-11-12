@@ -29,6 +29,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "Members")
 public class MemberEntity implements ILibraryEntity {
@@ -50,6 +51,12 @@ public class MemberEntity implements ILibraryEntity {
         memberID = source.readInt();
         name = source.readString();
         addlInfo = source.readString();
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return this.name;
     }
 
     public int getMemberID() {

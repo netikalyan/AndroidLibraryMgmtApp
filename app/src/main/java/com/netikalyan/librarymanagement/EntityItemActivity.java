@@ -27,15 +27,21 @@ package com.netikalyan.librarymanagement;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.netikalyan.librarymanagement.OnFragmentInteractionListener.DBAction;
 
 public class EntityItemActivity extends AppCompatActivity {
 
     public static final String SELECTED_TAB_TEXT = "SELECTED_TAB";
     public static final String DB_ACTION = "DB_ACTION";
     public static final String DB_ITEM = "DB_ITEM";
-    public static final int SAVE_SUCCESS_CODE = 1;
+    public static final int DELETE_CODE = 2;
+    public static final int SAVE_CODE = 1;
     public static final int CANCEL_CODE = 0;
     private Fragment mFragment;
     private String mTabText;
@@ -44,27 +50,28 @@ public class EntityItemActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(getString(R.string.app_name), "EntityItemActivity onCreate");
         setContentView(R.layout.activity_entity_item);
         mTabText = getIntent().getStringExtra(SELECTED_TAB_TEXT);
         mDBAction = getIntent()
-                .getIntExtra(DB_ACTION, OnFragmentInteractionListener.DBAction.ADD.ordinal());
+                .getIntExtra(DB_ACTION, DBAction.ADD.ordinal());
         if (getString(R.string.tab_book_list).equals(mTabText)) {
             mFragment = new BookFragment();
-            if (OnFragmentInteractionListener.DBAction.MODIFY.ordinal() == mDBAction) {
+            if (DBAction.MODIFY.ordinal() == mDBAction) {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(DB_ITEM, getIntent().getParcelableExtra(DB_ITEM));
                 mFragment.setArguments(bundle);
             }
         } else if (getString(R.string.tab_member_list).equals(mTabText)) {
             mFragment = new MemberFragment();
-            if (OnFragmentInteractionListener.DBAction.MODIFY.ordinal() == mDBAction) {
+            if (DBAction.MODIFY.ordinal() == mDBAction) {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(DB_ITEM, getIntent().getParcelableExtra(DB_ITEM));
                 mFragment.setArguments(bundle);
             }
         } else if (getString(R.string.tab_transaction_list).equals(mTabText)) {
             mFragment = new TransactionFragment();
-            if (OnFragmentInteractionListener.DBAction.MODIFY.ordinal() == mDBAction) {
+            if (DBAction.MODIFY.ordinal() == mDBAction) {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(DB_ITEM, getIntent().getParcelableExtra(DB_ITEM));
                 mFragment.setArguments(bundle);
@@ -77,64 +84,110 @@ public class EntityItemActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
-        menu.add(R.string.menu_save).setOnMenuItemClickListener(
-                new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (getString(R.string.tab_book_list).equals(mTabText)) {
-                            if (OnFragmentInteractionListener.DBAction.ADD.ordinal() == mDBAction) {
-                                ((BookFragment) mFragment)
-                                        .addBook(((BookFragment) mFragment).getBookDetails());
-                            } else if (OnFragmentInteractionListener.DBAction.MODIFY.ordinal() ==
-                                    mDBAction) {
-                                ((BookFragment) mFragment)
-                                        .modifyBook(((BookFragment) mFragment).getBookDetails());
-                            }
-                        } else if (getString(R.string.tab_member_list).equals(mTabText)) {
-                            if (OnFragmentInteractionListener.DBAction.ADD.ordinal() == mDBAction) {
-                                ((MemberFragment) mFragment)
-                                        .addMember(((MemberFragment) mFragment).getMemberDetails());
-                            } else if (OnFragmentInteractionListener.DBAction.MODIFY.ordinal() ==
-                                    mDBAction) {
-                                ((MemberFragment) mFragment)
-                                        .modifyMember(
-                                                ((MemberFragment) mFragment).getMemberDetails());
-                            }
-                        } else if (getString(R.string.tab_transaction_list).equals(mTabText)) {
-                            if (OnFragmentInteractionListener.DBAction.ADD.ordinal() == mDBAction) {
-                                ((TransactionFragment) mFragment).loanBookToMember(
-                                        ((TransactionFragment) mFragment).getTransactionDetails());
-                            } else if (OnFragmentInteractionListener.DBAction.MODIFY.ordinal() ==
-                                    mDBAction) {
-                                ((TransactionFragment) mFragment).returnBookToLibrary(
-                                        ((TransactionFragment) mFragment).getTransactionDetails());
-                            }
-                        }
-                        setResult(SAVE_SUCCESS_CODE);
-                        finish();
-                        return true;
-                    }
-                });
-        menu.add(R.string.menu_cancel).setOnMenuItemClickListener(
-                new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        setResult(CANCEL_CODE);
-                        finish();
-                        return true;
-                    }
-                });
-        return true;
+        new MenuInflater(getApplicationContext()).inflate(R.menu.actions, menu);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_save:
+                if (getString(R.string.tab_book_list).equals(mTabText)) {
+                    try {
+                        BookEntity bookEntity = ((BookFragment) mFragment).getBookDetails();
+                        if (DBAction.ADD.ordinal() == mDBAction) {
+                            ((BookFragment) mFragment).addBook(bookEntity);
+                        } else if (DBAction.MODIFY.ordinal() == mDBAction) {
+                            ((BookFragment) mFragment).modifyBook(bookEntity);
+                        }
+                    } catch (LibraryException e) {
+                        Log.e(getString(R.string.app_name),
+                                "Book details null. Please fill relevant fields");
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                } else if (getString(R.string.tab_member_list).equals(mTabText)) {
+                    try {
+                        MemberEntity memberEntity = ((MemberFragment) mFragment).getMemberDetails();
+                        if (DBAction.ADD.ordinal() == mDBAction) {
+                            ((MemberFragment) mFragment).addMember(memberEntity);
+                        } else if (DBAction.MODIFY.ordinal() == mDBAction) {
+                            ((MemberFragment) mFragment).modifyMember(memberEntity);
+                        }
+                    } catch (LibraryException e) {
+                        Log.e(getString(R.string.app_name),
+                                "Book details null. Please fill relevant fields");
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                } else if (getString(R.string.tab_transaction_list).equals(mTabText)) {
+                    try {
+                        TransactionEntity entity = ((TransactionFragment) mFragment)
+                                .getTransactionDetails(DBAction.ADD.ordinal() == mDBAction);
+                        if (DBAction.ADD.ordinal() == mDBAction) {
+                            ((TransactionFragment) mFragment).loanBookToMember(entity);
+                        } else if (DBAction.MODIFY.ordinal() == mDBAction) {
+                            ((TransactionFragment) mFragment).returnBookToLibrary(entity);
+                        }
+                    } catch (LibraryException e) {
+                        Log.e(getString(R.string.app_name),
+                                "Transaction null. Please fill relevant fields");
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                }
+                setResult(SAVE_CODE);
+                finish();
+                break;
+            case R.id.menu_cancel:
+                setResult(CANCEL_CODE);
+                finish();
+                break;
+            case R.id.menu_delete:
+                if (getString(R.string.tab_book_list).equals(mTabText)) {
+                    try {
+                        ((BookFragment) mFragment)
+                                .deleteBook(((BookFragment) mFragment).getBookDetails());
+                    } catch (LibraryException e) {
+                        Log.e(getString(R.string.app_name),
+                                "Error in getting book details. Please check all relevant fields");
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                } else if (getString(R.string.tab_member_list).equals(mTabText)) {
+                    try {
+                        ((MemberFragment) mFragment).deleteMember(
+                                ((MemberFragment) mFragment).getMemberDetails());
+                    } catch (LibraryException e) {
+                        Log.e(getString(R.string.app_name),
+                                "Error in getting member details. Please check all relevant fields");
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                } else if (getString(R.string.tab_transaction_list).equals(mTabText)) {
+                    try {
+                        TransactionEntity entity =
+                                ((TransactionFragment) mFragment).getTransactionDetails(false);
+                        ((TransactionFragment) mFragment).deleteTransaction(entity);
+                    } catch (LibraryException e) {
+                        Log.e(getString(R.string.app_name),
+                                "Error in getting transaction details. Please check all relevant fields");
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                }
+                setResult(DELETE_CODE);
+                finish();
+                break;
+            default:
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        setResult(0);
+        setResult(CANCEL_CODE);
     }
 }

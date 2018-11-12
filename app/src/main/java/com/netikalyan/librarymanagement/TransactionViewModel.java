@@ -28,6 +28,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class TransactionViewModel extends AndroidViewModel {
 
     public TransactionViewModel(@NonNull Application application) {
         super(application);
+        Log.e(application.getString(R.string.app_name), "TransactionViewModel");
         mRepository = new LibraryRepository(application);
         mTransactionList = mRepository.getAllTransactions();
     }

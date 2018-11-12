@@ -47,7 +47,7 @@ public class MemberFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putParcelable("ENTITY", entity);
         fragment.setArguments(bundle);
-        return  fragment;
+        return fragment;
     }
 
     @Nullable
@@ -71,7 +71,7 @@ public class MemberFragment extends Fragment {
         mViewModel.getAllMembers().observe(this, new Observer<List<MemberEntity>>() {
             @Override
             public void onChanged(@Nullable List<MemberEntity> memberEntities) {
-
+                // TODO: anything to do here ?
             }
         });
     }
@@ -93,7 +93,7 @@ public class MemberFragment extends Fragment {
     }
 
     @NonNull
-    public MemberEntity getMemberDetails() {
+    public MemberEntity getMemberDetails() throws LibraryException {
         MemberEntity memberEntity = new MemberEntity();
         memberEntity.setMemberID(getMemberID());
         memberEntity.setName(getMemberName());
@@ -101,16 +101,27 @@ public class MemberFragment extends Fragment {
         return memberEntity;
     }
 
-    public int getMemberID() {
-        return Integer.parseInt(editMemberID.getText().toString());
+    public int getMemberID() throws LibraryException {
+        String memberID = editMemberID.getText().toString();
+        if (!memberID.isEmpty())
+            return Integer.parseInt(memberID);
+        throw new LibraryException(LibraryException.Constants.MEMBER_ID_MISSING);
     }
 
-    public String getMemberName() {
-        return editMemberName.getText().toString();
+    @NonNull
+    public String getMemberName() throws LibraryException {
+        String name = editMemberName.getText().toString();
+        if (!name.isEmpty())
+            return name;
+        throw new LibraryException(LibraryException.Constants.MEMBER_NAME_MISSING);
     }
 
-    public String getMemberInfo() {
-        return editMemberInfo.getText().toString();
+    @NonNull
+    public String getMemberInfo() throws LibraryException {
+        String info = editMemberInfo.getText().toString();
+        if (!info.isEmpty())
+            return info;
+        throw new LibraryException(LibraryException.Constants.MEMBER_INFO_MISSING);
     }
 
     private void setMember(@NonNull MemberEntity member) {

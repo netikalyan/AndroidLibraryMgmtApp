@@ -28,6 +28,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class BookViewModel extends AndroidViewModel {
 
     public BookViewModel(@NonNull Application application) {
         super(application);
+        Log.d(application.getString(R.string.app_name), "BookViewModel");
         mRepository = new LibraryRepository(application);
         mBookList = mRepository.getAllBooks();
     }
@@ -61,7 +63,15 @@ public class BookViewModel extends AndroidViewModel {
         mRepository.deleteAllBooks();
     }
 
-    public BookEntity searchBook(int bookID) {
-        return mRepository.searchBook(bookID);
+    public BookEntity searchBookByID(int bookID) {
+        return mRepository.searchBookByID(bookID);
+    }
+
+    public BookEntity[] searchBookByTitle(String bookTitle) {
+        return mRepository.searchBookByTitle(bookTitle);
+    }
+
+    public BookEntity[] searchBookByAuthor(String bookAuthor) {
+        return mRepository.searchBookByAuthor(bookAuthor);
     }
 }
