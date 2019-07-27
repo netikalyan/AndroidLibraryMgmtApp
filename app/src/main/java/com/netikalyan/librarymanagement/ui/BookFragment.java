@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.ui;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,9 +35,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import java.util.List;
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.BookEntity;
+import com.netikalyan.librarymanagement.data.IBookManagement;
+import com.netikalyan.librarymanagement.data.LibraryException;
+import com.netikalyan.librarymanagement.viewmodel.BookViewModel;
 
-public class BookFragment extends Fragment {
+import java.util.Objects;
+
+public class BookFragment extends Fragment implements IBookManagement {
 
     private BookViewModel mViewModel;
     private EditText editBookID, editBookTitle, editBookAuthor, editBookPrice, editBookAvailable;
@@ -54,7 +59,7 @@ public class BookFragment extends Fragment {
         editBookPrice = rootView.findViewById(R.id.editBookPrice);
         editBookAvailable = rootView.findViewById(R.id.editBookAvailable);
         if (null != getArguments()) {
-            setBook((BookEntity) getArguments().getParcelable(EntityItemActivity.DB_ITEM));
+            setBook(Objects.requireNonNull(getArguments().getParcelable(EntityItemActivity.DB_ITEM)));
         }
         return rootView;
     }
@@ -63,60 +68,61 @@ public class BookFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(BookViewModel.class);
-        mViewModel.getAllBooks().observe(this, new Observer<List<BookEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<BookEntity> bookEntities) {
-                // TODO: anything to do here ?
-                Log.d(getString(R.string.app_name), "Change in Books. Observer called");
-            }
+        mViewModel.getAllBooks().observe(this, bookEntities -> {
+            // TODO: anything to do here ?
+            Log.d(getString(R.string.app_name), "Change in Books. Observer called");
         });
     }
 
+    @Override
     public void addBook(BookEntity book) {
         mViewModel.addNewBook(book);
     }
 
+    @Override
     public BookEntity searchBook(int bookID) {
         return mViewModel.searchBookByID(bookID);
     }
 
+    @Override
     public void modifyBook(BookEntity book) {
         mViewModel.updateBook(book);
     }
 
+    @Override
     public void deleteBook(BookEntity book) {
         mViewModel.deleteBook(book);
     }
 
-    public int getBookID() throws LibraryException {
+    private int getBookID() throws LibraryException {
         String bookID = editBookID.getText().toString();
         if (!bookID.isEmpty())
             return Integer.parseInt(bookID);
         throw new LibraryException(LibraryException.Constants.BOOK_ID_MISSING);
     }
 
-    public String getBookTitle() throws LibraryException {
+    private String getBookTitle() throws LibraryException {
         String title = editBookTitle.getText().toString();
         if (!title.isEmpty())
             return title;
         throw new LibraryException(LibraryException.Constants.BOOK_TITLE_MISSING);
     }
 
-    public String getBookAuthor() throws LibraryException {
+    private String getBookAuthor() throws LibraryException {
         String author = editBookAuthor.getText().toString();
         if (!author.isEmpty())
             return author;
         throw new LibraryException(LibraryException.Constants.BOOK_AUTHOR_MISSING);
     }
 
-    public float getBookPrice() throws LibraryException {
+    private float getBookPrice() throws LibraryException {
         String price = editBookPrice.getText().toString();
         if (!price.isEmpty())
             return Float.parseFloat(editBookPrice.getText().toString());
         throw new LibraryException(LibraryException.Constants.BOOK_PRICE_MISSING);
     }
 
-    public int getBookAvailable() throws LibraryException {
+    private int getBookAvailable() throws LibraryException {
         String availableCopies = editBookAvailable.getText().toString();
         if (!availableCopies.isEmpty())
             return Integer.parseInt(availableCopies);

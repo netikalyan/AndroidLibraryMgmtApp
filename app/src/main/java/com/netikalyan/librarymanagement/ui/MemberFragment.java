@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.ui;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,9 +34,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import java.util.List;
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.IMemberManagement;
+import com.netikalyan.librarymanagement.data.LibraryException;
+import com.netikalyan.librarymanagement.data.MemberEntity;
+import com.netikalyan.librarymanagement.viewmodel.MemberViewModel;
 
-public class MemberFragment extends Fragment {
+import java.util.Objects;
+
+public class MemberFragment extends Fragment implements IMemberManagement {
 
     private MemberViewModel mViewModel;
     private EditText editMemberID, editMemberName, editMemberInfo;
@@ -59,7 +64,7 @@ public class MemberFragment extends Fragment {
         editMemberName = rootView.findViewById(R.id.editMemberName);
         editMemberInfo = rootView.findViewById(R.id.editMemberInfo);
         if (null != getArguments()) {
-            setMember((MemberEntity) getArguments().getParcelable(EntityItemActivity.DB_ITEM));
+            setMember(Objects.requireNonNull(getArguments().getParcelable(EntityItemActivity.DB_ITEM)));
         }
         return rootView;
     }
@@ -68,26 +73,27 @@ public class MemberFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(MemberViewModel.class);
-        mViewModel.getAllMembers().observe(this, new Observer<List<MemberEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<MemberEntity> memberEntities) {
-                // TODO: anything to do here ?
-            }
+        mViewModel.getAllMembers().observe(this, memberEntities -> {
+            // TODO: anything to do here ?
         });
     }
 
+    @Override
     public void addMember(MemberEntity member) {
         mViewModel.addNewMember(member);
     }
 
+    @Override
     public MemberEntity searchMember(int memberID) {
         return mViewModel.searchMember(memberID);
     }
 
+    @Override
     public void modifyMember(MemberEntity member) {
         mViewModel.updateMember(member);
     }
 
+    @Override
     public void deleteMember(MemberEntity member) {
         mViewModel.deleteMember(member);
     }
@@ -101,7 +107,7 @@ public class MemberFragment extends Fragment {
         return memberEntity;
     }
 
-    public int getMemberID() throws LibraryException {
+    private int getMemberID() throws LibraryException {
         String memberID = editMemberID.getText().toString();
         if (!memberID.isEmpty())
             return Integer.parseInt(memberID);
@@ -109,19 +115,21 @@ public class MemberFragment extends Fragment {
     }
 
     @NonNull
-    public String getMemberName() throws LibraryException {
+    private String getMemberName() throws LibraryException {
         String name = editMemberName.getText().toString();
         if (!name.isEmpty())
             return name;
         throw new LibraryException(LibraryException.Constants.MEMBER_NAME_MISSING);
     }
 
-    @NonNull
-    public String getMemberInfo() throws LibraryException {
+    @Nullable
+    private String getMemberInfo() throws LibraryException {
         String info = editMemberInfo.getText().toString();
         if (!info.isEmpty())
             return info;
-        throw new LibraryException(LibraryException.Constants.MEMBER_INFO_MISSING);
+        else
+            return null;
+        //throw new LibraryException(LibraryException.Constants.MEMBER_INFO_MISSING);
     }
 
     private void setMember(@NonNull MemberEntity member) {

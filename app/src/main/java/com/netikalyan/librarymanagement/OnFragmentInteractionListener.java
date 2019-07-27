@@ -31,11 +31,14 @@ public interface OnFragmentInteractionListener {
         MODIFY,
         DELETE,
         DELETE_ALL,
+    }
+
+    enum NavigationAction {
         FIRST,
         PREVIOUS,
         NEXT,
         LAST,
     }
 
-    void onFragmentInteraction(DBAction action);
+    void onFragmentInteraction(NavigationAction action);
 }

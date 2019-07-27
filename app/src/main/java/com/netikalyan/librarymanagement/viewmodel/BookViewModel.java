@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
@@ -30,40 +30,52 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.netikalyan.librarymanagement.LibraryRepository;
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.BookEntity;
+
 import java.util.List;
 
-public class TransactionViewModel extends AndroidViewModel {
-    private LiveData<List<TransactionEntity>> mTransactionList;
-    private LibraryRepository mRepository;
+public class BookViewModel extends AndroidViewModel {
+    private final LiveData<List<BookEntity>> mBookList;
+    private final LibraryRepository mRepository;
 
-    public TransactionViewModel(@NonNull Application application) {
+    public BookViewModel(@NonNull Application application) {
         super(application);
-        Log.e(application.getString(R.string.app_name), "TransactionViewModel");
+        Log.d(application.getString(R.string.app_name), "BookViewModel");
         mRepository = new LibraryRepository(application);
-        mTransactionList = mRepository.getAllTransactions();
+        mBookList = mRepository.getAllBooks();
     }
 
-    public LiveData<List<TransactionEntity>> getAllTransactions() {
-        return mTransactionList;
+    public LiveData<List<BookEntity>> getAllBooks() {
+        return mBookList;
     }
 
-    public void addNewTransaction(TransactionEntity transaction) {
-        mRepository.loanBookToMember(transaction);
+    public void addNewBook(BookEntity book) {
+        mRepository.addNewBook(book);
     }
 
-    public void updateTransaction(TransactionEntity transaction) {
-        mRepository.updateTransactionDetails(transaction);
+    public void updateBook(BookEntity book) {
+        mRepository.updateBookDetails(book);
     }
 
-    public void deleteTransaction(TransactionEntity transaction) {
-        mRepository.deleteTransaction(transaction);
+    public void deleteBook(BookEntity book) {
+        mRepository.deleteBook(book);
     }
 
-    public void deleteAllTransactions() {
-        mRepository.deleteAllTransactions();
+    public void deleteAllBooks() {
+        mRepository.deleteAllBooks();
     }
 
-    public TransactionEntity searcbTransaction(int transaactionID) {
-        return mRepository.searchTransaction(transaactionID);
+    public BookEntity searchBookByID(int bookID) {
+        return mRepository.searchBookByID(bookID);
+    }
+
+    public BookEntity[] searchBookByTitle(String bookTitle) {
+        return mRepository.searchBookByTitle(bookTitle);
+    }
+
+    public BookEntity[] searchBookByAuthor(String bookAuthor) {
+        return mRepository.searchBookByAuthor(bookAuthor);
     }
 }

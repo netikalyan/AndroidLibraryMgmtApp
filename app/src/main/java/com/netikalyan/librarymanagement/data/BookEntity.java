@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.data;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;

@@ -22,8 +22,39 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.data;
 
-public interface OnListFragmentInteractionListener {
-    void onListFragmentInteraction(ILibraryEntity item);
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
+
+import java.util.List;
+
+@Dao
+public interface MemberDao {
+
+    @Query("SELECT * FROM Members ORDER BY MemberID ASC")
+    LiveData<List<MemberEntity>> getAllMembers();
+
+    @Query("DELETE FROM Members")
+    void deleteAll();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addMember(MemberEntity member);
+
+    @Update
+    void modifyMember(MemberEntity member);
+
+    @Delete
+    void deleteMember(MemberEntity member);
+
+    @Query("SELECT * FROM Members WHERE MemberID=:memberID")
+    MemberEntity searchMember(int memberID);
+
+    @Query("SELECT * FROM Members WHERE Name LIKE  :memberName ORDER BY MemberID ASC")
+    MemberEntity[] searchMemberByName(String memberName);
 }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.data;
 
 import android.app.Application;
 import android.arch.persistence.db.SupportSQLiteDatabase;
@@ -31,6 +31,8 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
+
+import com.netikalyan.librarymanagement.util.DateConverter;
 
 @Database(entities = {BookEntity.class, MemberEntity.class,
         TransactionEntity.class}, version = 1, exportSchema = false)

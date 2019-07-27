@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".MemberFragment">
+    tools:context=".ui.MemberFragment">
 
     <TableLayout
-        android:id="@+id/tableLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,8 +21,10 @@
 
             <EditText
                 android:id="@+id/editMemberID"
-                android:inputType="number"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:autofillHints="@string/member_id"
+                android:hint="@string/member_id"
+                android:inputType="number" />
         </TableRow>
 
         <TableRow android:layout_marginVertical="8dp">
@@ -34,8 +35,10 @@
 
             <EditText
                 android:id="@+id/editMemberName"
-                android:inputType="textPersonName"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:autofillHints="@string/member_name"
+                android:hint="@string/member_name"
+                android:inputType="textPersonName" />
         </TableRow>
 
         <TableRow android:layout_marginVertical="8dp">
@@ -46,8 +49,10 @@
 
             <EditText
                 android:id="@+id/editMemberInfo"
-                android:inputType="phone"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:autofillHints="@string/member_info"
+                android:hint="@string/member_info"
+                android:inputType="phone" />
         </TableRow>
 
     </TableLayout>

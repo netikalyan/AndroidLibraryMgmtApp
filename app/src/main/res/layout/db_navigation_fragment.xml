@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="horizontal"
-    tools:context=".NavigationFragment">
+    tools:context=".ui.NavigationFragment">
 
     <Button
         android:id="@+id/btnFirst"

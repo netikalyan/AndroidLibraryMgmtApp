@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.ui;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,17 +34,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.BookEntity;
+import com.netikalyan.librarymanagement.data.ITransactionManagement;
+import com.netikalyan.librarymanagement.data.LibraryException;
+import com.netikalyan.librarymanagement.data.MemberEntity;
+import com.netikalyan.librarymanagement.data.TransactionEntity;
+import com.netikalyan.librarymanagement.viewmodel.BookViewModel;
+import com.netikalyan.librarymanagement.viewmodel.MemberViewModel;
+import com.netikalyan.librarymanagement.viewmodel.TransactionViewModel;
+
 import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
+import java.util.Objects;
 
-public class TransactionFragment extends Fragment {
+public class TransactionFragment extends Fragment implements ITransactionManagement {
 
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private TransactionViewModel mViewModel;
@@ -76,80 +84,65 @@ public class TransactionFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(TransactionViewModel.class);
         mBookViewModel = ViewModelProviders.of(this).get(BookViewModel.class);
         mMemberViewModel = ViewModelProviders.of(this).get(MemberViewModel.class);
-        mViewModel.getAllTransactions().observe(this, new Observer<List<TransactionEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<TransactionEntity> transactionEntities) {
-                // TODO: anything to do here ?
+        mViewModel.getAllTransactions().observe(this, transactionEntities -> {
+            // TODO: anything to do here ?
+        });
+        mBookViewModel.getAllBooks().observe(this, bookEntities -> {
+            if (null != bookEntities && 0 < bookEntities.size()) {
+                editTransactionBookName.setAdapter(
+                        new ArrayAdapter<>(requireContext(),
+                                android.R.layout.simple_list_item_1,
+                                bookEntities));
+                editTransactionBookName.setOnItemClickListener(
+                        (parent, view, position, id) -> {
+                            Log.d(getString(R.string.app_name),
+                                    parent.getItemAtPosition(position).toString());
+                            BookEntity[] book = mBookViewModel.searchBookByTitle(
+                                    editTransactionBookName.getText().toString());
+                            textTransactionBookID
+                                    .setText(String.valueOf(book[0].getBookID()));
+                        });
             }
         });
-        mBookViewModel.getAllBooks().observe(this, new Observer<List<BookEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<BookEntity> bookEntities) {
-                if (null != bookEntities && 0 < bookEntities.size()) {
-                    editTransactionBookName.setAdapter(
-                            new ArrayAdapter<>(requireContext(),
-                                    android.R.layout.simple_list_item_1,
-                                    bookEntities));
-                    editTransactionBookName.setOnItemClickListener(
-                            new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view,
-                                                        int position,
-                                                        long id) {
-                                    Log.d(getString(R.string.app_name),
-                                            parent.getItemAtPosition(position).toString());
-                                    BookEntity[] book = mBookViewModel.searchBookByTitle(
-                                            editTransactionBookName.getText().toString());
-                                    textTransactionBookID
-                                            .setText(String.valueOf(book[0].getBookID()));
-                                }
-                            });
-                }
-            }
-        });
-        mMemberViewModel.getAllMembers().observe(this, new Observer<List<MemberEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<MemberEntity> memberEntities) {
-                if (null != memberEntities && 0 < memberEntities.size()) {
-                    editTransactionMemberName.setAdapter(
-                            new ArrayAdapter<>(requireContext(),
-                                    android.R.layout.simple_list_item_1,
-                                    memberEntities));
-                    editTransactionMemberName.setOnItemClickListener(
-                            new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view,
-                                                        int position,
-                                                        long id) {
-                                    Log.d(getString(R.string.app_name),
-                                            parent.getItemAtPosition(position).toString());
-                                    MemberEntity[] member = mMemberViewModel.searchMemberByName(
-                                            editTransactionMemberName.getText().toString());
-                                    textTransactionMemberID
-                                            .setText(String.valueOf(member[0].getMemberID()));
-                                }
-                            });
-                }
+        mMemberViewModel.getAllMembers().observe(this, memberEntities -> {
+            if (null != memberEntities && 0 < memberEntities.size()) {
+                editTransactionMemberName.setAdapter(
+                        new ArrayAdapter<>(requireContext(),
+                                android.R.layout.simple_list_item_1,
+                                memberEntities));
+                editTransactionMemberName.setOnItemClickListener(
+                        (parent, view, position, id) -> {
+                            Log.d(getString(R.string.app_name),
+                                    parent.getItemAtPosition(position).toString());
+                            MemberEntity[] member = mMemberViewModel.searchMemberByName(
+                                    editTransactionMemberName.getText().toString());
+                            textTransactionMemberID
+                                    .setText(String.valueOf(member[0].getMemberID()));
+                        });
             }
         });
         if (null != getArguments()) {
             setTransaction(
-                    (TransactionEntity) getArguments().getParcelable(EntityItemActivity.DB_ITEM));
+                    Objects.requireNonNull(getArguments().getParcelable(EntityItemActivity.DB_ITEM)));
         }
     }
 
+    @Override
     public void loanBookToMember(@NonNull TransactionEntity transaction) {
         mViewModel.addNewTransaction(transaction);
     }
 
+    @Override
     public void returnBookToLibrary(@NonNull TransactionEntity transaction) {
         mViewModel.updateTransaction(transaction);
     }
 
+    @Override
     public void deleteTransaction(@NonNull TransactionEntity transaction) {
         mViewModel.addNewTransaction(transaction);
     }
 
+    @Override
     public TransactionEntity search(int transactionID) {
         return mViewModel.searcbTransaction(transactionID);
     }
@@ -189,7 +182,7 @@ public class TransactionFragment extends Fragment {
         return transactionEntity;
     }
 
-    public int getTransactionID() {
+    private int getTransactionID() {
         if (!editTransactionID.getText().toString().isEmpty())
             return Integer.parseInt(editTransactionID.getText().toString());
         else
@@ -197,7 +190,7 @@ public class TransactionFragment extends Fragment {
         return -1;
     }
 
-    public int getTransactionMemberID() {
+    private int getTransactionMemberID() {
         if (!textTransactionMemberID.getText().toString().isEmpty())
             return Integer.parseInt(textTransactionMemberID.getText().toString());
         else
@@ -206,7 +199,7 @@ public class TransactionFragment extends Fragment {
     }
 
     @Nullable
-    public String getTransactionMemberName() {
+    private String getTransactionMemberName() {
         if (!editTransactionMemberName.getText().toString().isEmpty())
             return editTransactionMemberName.getText().toString();
         else
@@ -214,7 +207,7 @@ public class TransactionFragment extends Fragment {
         return null;
     }
 
-    public int getTransactionBookID() {
+    private int getTransactionBookID() {
         if (!textTransactionBookID.getText().toString().isEmpty())
             return Integer.parseInt(textTransactionBookID.getText().toString());
         else
@@ -223,7 +216,7 @@ public class TransactionFragment extends Fragment {
     }
 
     @Nullable
-    public String getTransactionBookTitle() {
+    private String getTransactionBookTitle() {
         if (!editTransactionBookName.getText().toString().isEmpty())
             return editTransactionBookName.getText().toString();
         else
@@ -232,7 +225,7 @@ public class TransactionFragment extends Fragment {
     }
 
     @Nullable
-    public Date getTransactionLoanDate() {
+    private Date getTransactionLoanDate() {
         Log.d(getString(R.string.app_name),
                 "Loan Date = " + editTransactionLoanDate.getText().toString());
         if (!editTransactionLoanDate.getText().toString().isEmpty()) {
@@ -249,7 +242,7 @@ public class TransactionFragment extends Fragment {
     }
 
     @Nullable
-    public Date getTransactionReturnDate() {
+    private Date getTransactionReturnDate() {
         Log.v(getString(R.string.app_name),
                 "Return Date = " + editTransactionReturnDate.getText().toString());
         if (null != editTransactionReturnDate.getText() &&

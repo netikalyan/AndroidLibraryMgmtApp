@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -34,14 +34,19 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.netikalyan.librarymanagement.OnFragmentInteractionListener.DBAction;
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.BookEntity;
+import com.netikalyan.librarymanagement.data.LibraryException;
+import com.netikalyan.librarymanagement.data.MemberEntity;
+import com.netikalyan.librarymanagement.data.TransactionEntity;
 
 public class EntityItemActivity extends AppCompatActivity {
 
     public static final String SELECTED_TAB_TEXT = "SELECTED_TAB";
     public static final String DB_ACTION = "DB_ACTION";
     public static final String DB_ITEM = "DB_ITEM";
-    public static final int DELETE_CODE = 2;
-    public static final int SAVE_CODE = 1;
+    private static final int DELETE_CODE = 2;
+    private static final int SAVE_CODE = 1;
     public static final int CANCEL_CODE = 0;
     private Fragment mFragment;
     private String mTabText;

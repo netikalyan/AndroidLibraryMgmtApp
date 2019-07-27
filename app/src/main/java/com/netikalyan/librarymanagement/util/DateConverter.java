@@ -22,39 +22,20 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.util;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.OnConflictStrategy;
-import android.arch.persistence.room.Query;
-import android.arch.persistence.room.Update;
+import android.arch.persistence.room.TypeConverter;
 
-import java.util.List;
+import java.util.Date;
 
-@Dao
-public interface MemberDao {
+public class DateConverter {
+    @TypeConverter
+    public static Date toDate(Long timestamp) {
+        return timestamp == null ? null : new Date(timestamp);
+    }
 
-    @Query("SELECT * FROM Members ORDER BY MemberID ASC")
-    LiveData<List<MemberEntity>> getAllMembers();
-
-    @Query("DELETE FROM Members")
-    void deleteAll();
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addMember(MemberEntity member);
-
-    @Update
-    void modifyMember(MemberEntity member);
-
-    @Delete
-    void deleteMember(MemberEntity member);
-
-    @Query("SELECT * FROM Members WHERE MemberID=:memberID")
-    MemberEntity searchMember(int memberID);
-
-    @Query("SELECT * FROM Members WHERE Name LIKE  :memberName ORDER BY MemberID ASC")
-    MemberEntity[] searchMemberByName(String memberName);
+    @TypeConverter
+    public static Long toTimestamp(Date date) {
+        return date == null ? null : date.getTime();
+    }
 }

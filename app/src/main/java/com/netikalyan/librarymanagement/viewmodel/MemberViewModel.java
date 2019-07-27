@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
@@ -30,48 +30,48 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.netikalyan.librarymanagement.LibraryRepository;
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.MemberEntity;
+
 import java.util.List;
 
-public class BookViewModel extends AndroidViewModel {
-    private LiveData<List<BookEntity>> mBookList;
-    private LibraryRepository mRepository;
+public class MemberViewModel extends AndroidViewModel {
+    private final LiveData<List<MemberEntity>> mMemberList;
+    private final LibraryRepository mRepository;
 
-    public BookViewModel(@NonNull Application application) {
+    public MemberViewModel(@NonNull Application application) {
         super(application);
-        Log.d(application.getString(R.string.app_name), "BookViewModel");
+        Log.e(application.getString(R.string.app_name), "BookViewModel");
         mRepository = new LibraryRepository(application);
-        mBookList = mRepository.getAllBooks();
+        mMemberList = mRepository.getAllMembers();
     }
 
-    public LiveData<List<BookEntity>> getAllBooks() {
-        return mBookList;
+    public LiveData<List<MemberEntity>> getAllMembers() {
+        return mMemberList;
     }
 
-    public void addNewBook(BookEntity book) {
-        mRepository.addNewBook(book);
+    public void addNewMember(MemberEntity member) {
+        mRepository.addNewMember(member);
     }
 
-    public void updateBook(BookEntity book) {
-        mRepository.updateBookDetails(book);
+    public void updateMember(MemberEntity member) {
+        mRepository.updateMemberDetails(member);
     }
 
-    public void deleteBook(BookEntity book) {
-        mRepository.deleteBook(book);
+    public void deleteMember(MemberEntity member) {
+        mRepository.deleteMember(member);
     }
 
-    public void deleteAllBooks() {
+    public void deleteAllMembers() {
         mRepository.deleteAllBooks();
     }
 
-    public BookEntity searchBookByID(int bookID) {
-        return mRepository.searchBookByID(bookID);
+    public MemberEntity searchMember(int memberID) {
+        return mRepository.searchMember(memberID);
     }
 
-    public BookEntity[] searchBookByTitle(String bookTitle) {
-        return mRepository.searchBookByTitle(bookTitle);
-    }
-
-    public BookEntity[] searchBookByAuthor(String bookAuthor) {
-        return mRepository.searchBookByAuthor(bookAuthor);
+    public MemberEntity[] searchMemberByName(String memberName) {
+        return mRepository.searchMemberByName(memberName);
     }
 }

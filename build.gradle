@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.4.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -19,6 +19,11 @@ allprojects {
         google()
         jcenter()
     }
+}
+
+ext {
+    ANDROID_VERSION = '28.0.0'
+    ARCH_COMP_VERSION = '1.1.1'
 }
 
 task clean(type: Delete) {

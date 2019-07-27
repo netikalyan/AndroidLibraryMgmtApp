@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"
@@ -15,7 +15,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.design.widget.TabItem
-            android:id="@+id/tabBook"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingHorizontal="12dp"
@@ -23,7 +22,6 @@
             android:text="@string/tab_book" />
 
         <android.support.design.widget.TabItem
-            android:id="@+id/tabMember"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingHorizontal="12dp"
@@ -31,7 +29,6 @@
             android:text="@string/tab_member" />
 
         <android.support.design.widget.TabItem
-            android:id="@+id/tabTransaction"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingHorizontal="12dp"

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.ui;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +30,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.MemberEntity;
+import com.netikalyan.librarymanagement.data.OnListFragmentInteractionListener;
 
 import java.util.List;
 
@@ -58,14 +62,14 @@ public class MemberEntityRecyclerViewAdapter
         holder.mItem = mMemberList.get(position);
         holder.mMemberIdView.setText(String.valueOf(mMemberList.get(position).getMemberID()));
         holder.mNameView.setText(mMemberList.get(position).getName());
-        holder.mOtherInfoView.setText(mMemberList.get(position).getAddlInfo());
+        String addlInfo = mMemberList.get(position).getAddlInfo();
+        if (null != addlInfo) {
+            holder.mOtherInfoView.setText(addlInfo);
+        }
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
+        holder.mView.setOnClickListener(v -> {
+            if (null != mListener) {
+                mListener.onListFragmentInteraction(holder.mItem);
             }
         });
     }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,7 +30,16 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+
+import com.netikalyan.librarymanagement.OnFragmentInteractionListener;
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.BookEntity;
+import com.netikalyan.librarymanagement.data.ILibraryEntity;
+import com.netikalyan.librarymanagement.data.MemberEntity;
+import com.netikalyan.librarymanagement.data.OnListFragmentInteractionListener;
+import com.netikalyan.librarymanagement.data.TransactionEntity;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
         implements OnFragmentInteractionListener, OnListFragmentInteractionListener {
@@ -49,21 +58,18 @@ public class MainActivity extends AppCompatActivity
         mTransactionListFragment = new TransactionListFragment();
 
         FloatingActionButton fabNew = findViewById(R.id.fabAddNew);
-        fabNew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TabLayout.Tab tab = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition());
-                Intent intent = new Intent(getApplicationContext(), EntityItemActivity.class);
-                intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT, tab.getText().toString());
-                startActivityForResult(intent, mTabLayout.getSelectedTabPosition());
-            }
+        fabNew.setOnClickListener(v -> {
+            TabLayout.Tab tab = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition());
+            Intent intent = new Intent(getApplicationContext(), EntityItemActivity.class);
+            intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT, Objects.requireNonNull(Objects.requireNonNull(tab).getText()).toString());
+            startActivityForResult(intent, mTabLayout.getSelectedTabPosition());
         });
 
         mTabLayout = findViewById(R.id.tabLayout);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (getString(R.string.tab_book_list).equals(tab.getText().toString())) {
+                if (getString(R.string.tab_book_list).equals(Objects.requireNonNull(tab.getText()).toString())) {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container, mBookListFragment).commitNow();
                 } else if (getString(R.string.tab_member_list).equals(tab.getText().toString())) {
@@ -108,7 +114,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(DBAction action) {
+    public void onFragmentInteraction(NavigationAction action) {
     }
 
     @Override

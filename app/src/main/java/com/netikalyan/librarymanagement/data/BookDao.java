@@ -22,20 +22,41 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.data;
 
-import android.arch.persistence.room.TypeConverter;
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
-import java.util.Date;
+import java.util.List;
 
-class DateConverter {
-    @TypeConverter
-    public static Date toDate(Long timestamp) {
-        return timestamp == null ? null : new Date(timestamp);
-    }
+@Dao
+public interface BookDao {
+    @Query("SELECT * FROM Books ORDER BY BookID ASC")
+    LiveData<List<BookEntity>> getAllBooks();
 
-    @TypeConverter
-    public static Long toTimestamp(Date date) {
-        return date == null ? null : date.getTime();
-    }
+    @Query("DELETE FROM Books")
+    void deleteAll();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addBook(BookEntity book);
+
+    @Update
+    void modifyBook(BookEntity book);
+
+    @Delete
+    void deleteBook(BookEntity book);
+
+    @Query("SELECT * FROM Books WHERE BookID=:bookID")
+    BookEntity searchByID(int bookID);
+
+    @Query("SELECT * FROM Books WHERE Title LIKE :title ORDER BY BookID ASC")
+    BookEntity[] searchByTitle(String title);
+
+    @Query("SELECT * FROM Books WHERE Author LIKE :name ORDER BY BookID ASC")
+    BookEntity[] searchByAuthor(String name);
 }

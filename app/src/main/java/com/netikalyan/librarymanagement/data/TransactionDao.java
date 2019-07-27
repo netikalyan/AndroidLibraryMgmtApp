@@ -22,26 +22,38 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.data;
 
-class LibraryException extends Exception {
-    static class Constants {
-        public static final String BOOK_ID_MISSING = "Book ID Missing";
-        public static final String BOOK_TITLE_MISSING = "Title Missing";
-        public static final String BOOK_AUTHOR_MISSING = "Author Name Missing";
-        public static final String BOOK_PRICE_MISSING = "Price Missing";
-        public static final String BOOK_AVAILABLE_COPIES_MISSING = "No. of Copies Missing";
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
-        public static final String MEMBER_ID_MISSING = "Member ID Missing";
-        public static final String MEMBER_NAME_MISSING = "Member Name Missing";
-        public static final String MEMBER_INFO_MISSING = "Member Info Missing";
+import java.util.List;
 
-        public static final String TRANSACTION_ID_MISSING = "Transaction ID Missing";
-        public static final String TRANSACTION_LOAN_DATE_MISSING = "Loan Date Missing";
-        public static final String TRANSACTION_RETURN_DATE_MISSING = "Return Date Missing";
-    }
+@Dao
+public interface TransactionDao {
+    @Query("SELECT * FROM TRANSACTIONS ORDER BY TransactionID ASC")
+    LiveData<List<TransactionEntity>> getAllTransactions();
 
-    LibraryException(String message) {
-        super(message);
-    }
+    @Query("DELETE FROM Transactions")
+    void deleteAll();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addTransaction(TransactionEntity transaction);
+
+    @Update
+    void modifyTrasaction(TransactionEntity transaction);
+
+    @Delete
+    void deleteTransaction(TransactionEntity transaction);
+
+    @Query("SELECT * FROM Transactions WHERE TransactionID=:transactionID")
+    TransactionEntity search(int transactionID);
+
+    //@Query("SELECT * FROM TRANSACTIONS WHERE LoanDate=:loanDate")
+    //TransactionEntity[] search(Date loanDate);
 }

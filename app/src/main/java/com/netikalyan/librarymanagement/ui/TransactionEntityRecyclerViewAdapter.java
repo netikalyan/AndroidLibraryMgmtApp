@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.ui;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,6 +33,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.BookEntity;
+import com.netikalyan.librarymanagement.data.MemberEntity;
+import com.netikalyan.librarymanagement.data.OnListFragmentInteractionListener;
+import com.netikalyan.librarymanagement.data.TransactionEntity;
+
+import java.util.Date;
 import java.util.List;
 
 public class TransactionEntityRecyclerViewAdapter
@@ -67,15 +74,12 @@ public class TransactionEntityRecyclerViewAdapter
         holder.mMemberIDView.setText(String.valueOf(mTransactionList.get(position).getMemberID()));
         holder.mLoanDateView.setText(
                 DateFormat.format(DATE_FORMAT, mTransactionList.get(position).getDateOfLoan()));
-        holder.mReturnDateView.setText(
-                DateFormat.format(DATE_FORMAT, mTransactionList.get(position).getDateOfReturn()));
+        Date returnDate = mTransactionList.get(position).getDateOfReturn();
+        if (null != returnDate) {
+            holder.mReturnDateView.setText(DateFormat.format(DATE_FORMAT, returnDate));
+        }
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onListFragmentInteraction(holder.mItem);
-            }
-        });
+        holder.mView.setOnClickListener(v -> mListener.onListFragmentInteraction(holder.mItem));
     }
 
     @Override

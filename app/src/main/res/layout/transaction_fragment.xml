@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".TransactionFragment">
+    tools:context=".ui.TransactionFragment">
 
     <TableLayout
-        android:id="@+id/tableLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,6 +22,8 @@
             <EditText
                 android:id="@+id/editTransactionID"
                 android:layout_weight="1"
+                android:autofillHints="@string/transaction_id"
+                android:hint="@string/transaction_id"
                 android:inputType="number" />
         </TableRow>
 
@@ -76,6 +77,8 @@
             <EditText
                 android:id="@+id/editTransactionLoanDate"
                 android:layout_weight="1"
+                android:autofillHints="@string/transaction_loan_date"
+                android:hint="@string/transaction_loan_date"
                 android:inputType="date" />
         </TableRow>
 
@@ -88,6 +91,8 @@
             <EditText
                 android:id="@+id/editTransactionReturnDate"
                 android:layout_weight="1"
+                android:autofillHints="@string/transaction_return_date"
+                android:hint="@string/transaction_return_date"
                 android:inputType="date" />
         </TableRow>
     </TableLayout>

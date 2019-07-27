@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.data;
 
-import android.os.Parcelable;
-
-public interface ILibraryEntity extends Parcelable {
+public interface OnListFragmentInteractionListener {
+    void onListFragmentInteraction(ILibraryEntity item);
 }

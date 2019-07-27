@@ -27,15 +27,23 @@ package com.netikalyan.librarymanagement;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 
+import com.netikalyan.librarymanagement.data.BookDao;
+import com.netikalyan.librarymanagement.data.BookEntity;
+import com.netikalyan.librarymanagement.data.LibraryDatabase;
+import com.netikalyan.librarymanagement.data.MemberDao;
+import com.netikalyan.librarymanagement.data.MemberEntity;
+import com.netikalyan.librarymanagement.data.TransactionDao;
+import com.netikalyan.librarymanagement.data.TransactionEntity;
+
 import java.util.List;
 
 public class LibraryRepository {
-    private BookDao mBookDao;
-    private MemberDao mMemberDao;
-    private TransactionDao mTransactionDao;
-    private LiveData<List<BookEntity>> mListBooks;
-    private LiveData<List<MemberEntity>> mListMembers;
-    private LiveData<List<TransactionEntity>> mListTransactions;
+    private final BookDao mBookDao;
+    private final MemberDao mMemberDao;
+    private final TransactionDao mTransactionDao;
+    private final LiveData<List<BookEntity>> mListBooks;
+    private final LiveData<List<MemberEntity>> mListMembers;
+    private final LiveData<List<TransactionEntity>> mListTransactions;
 
     public LibraryRepository(Application application) {
         LibraryDatabase database = LibraryDatabase.getDatabase(application);

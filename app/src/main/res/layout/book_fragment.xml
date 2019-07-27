@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".BookFragment">
+    tools:context=".ui.BookFragment">
 
     <TableLayout
-        android:id="@+id/tableLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,6 +22,8 @@
             <EditText
                 android:id="@+id/editBookID"
                 android:layout_weight="1"
+                android:autofillHints="@string/book_id"
+                android:hint="@string/book_id"
                 android:inputType="number" />
         </TableRow>
 
@@ -35,6 +36,8 @@
             <EditText
                 android:id="@+id/editBookTitle"
                 android:layout_weight="1"
+                android:autofillHints="@string/book_title"
+                android:hint="@string/book_title"
                 android:inputType="text" />
         </TableRow>
 
@@ -47,6 +50,8 @@
             <EditText
                 android:id="@+id/editBookAuthor"
                 android:layout_weight="1"
+                android:autofillHints="@string/book_author"
+                android:hint="@string/book_author"
                 android:inputType="textPersonName" />
         </TableRow>
 
@@ -59,6 +64,8 @@
             <EditText
                 android:id="@+id/editBookPrice"
                 android:layout_weight="1"
+                android:autofillHints="@string/book_price"
+                android:hint="@string/book_price"
                 android:inputType="numberDecimal" />
         </TableRow>
 
@@ -71,6 +78,8 @@
             <EditText
                 android:id="@+id/editBookAvailable"
                 android:layout_weight="1"
+                android:autofillHints="@string/book_available"
+                android:hint="@string/book_available"
                 android:inputType="number" />
         </TableRow>
     </TableLayout>

@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.ui;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -37,13 +36,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.OnListFragmentInteractionListener;
+import com.netikalyan.librarymanagement.viewmodel.MemberViewModel;
 
-public class TransactionListFragment extends Fragment {
+public class MemberListFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
-    private TransactionEntityRecyclerViewAdapter mAdapter;
+    private MemberEntityRecyclerViewAdapter mAdapter;
 
-    public TransactionListFragment() {
+    public MemberListFragment() {
     }
 
     @Override
@@ -55,46 +56,16 @@ public class TransactionListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_transactionentity_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_memberentity_list, container, false);
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-            TransactionViewModel transactionViewModel =
-                    ViewModelProviders.of(this).get(TransactionViewModel.class);
-            transactionViewModel.getAllTransactions()
-                    .observe(this, new Observer<List<TransactionEntity>>() {
-                        @Override
-                        public void onChanged(
-                                @Nullable List<TransactionEntity> transactionEntities) {
-                            if (null != transactionEntities && 0 < transactionEntities.size())
-                                mAdapter.setTransactionList(transactionEntities);
-                        }
-                    });
-
-            mAdapter = new TransactionEntityRecyclerViewAdapter(
-                    transactionViewModel.getAllTransactions().getValue(), mListener);
+            MemberViewModel mViewModel = ViewModelProviders.of(this).get(MemberViewModel.class);
+            mViewModel.getAllMembers().observe(this, memberEntities -> mAdapter.setMemberList(memberEntities));
+            mAdapter = new MemberEntityRecyclerViewAdapter(mViewModel.getAllMembers().getValue(),
+                    mListener);
             recyclerView.setAdapter(mAdapter);
-
-            BookViewModel bookViewModel = ViewModelProviders.of(this).get(BookViewModel.class);
-            bookViewModel.getAllBooks().observe(this, new Observer<List<BookEntity>>() {
-                @Override
-                public void onChanged(@Nullable List<BookEntity> bookEntities) {
-                    if (null != bookEntities && 0 < bookEntities.size())
-                        mAdapter.setBookList(bookEntities);
-                }
-            });
-
-            MemberViewModel memberViewModel =
-                    ViewModelProviders.of(this).get(MemberViewModel.class);
-            memberViewModel.getAllMembers().observe(this, new Observer<List<MemberEntity>>() {
-                @Override
-                public void onChanged(@Nullable List<MemberEntity> memberEntities) {
-                    if (null != memberEntities && 0 < memberEntities.size())
-                        mAdapter.setMemberList(memberEntities);
-                }
-            });
         }
         return view;
     }

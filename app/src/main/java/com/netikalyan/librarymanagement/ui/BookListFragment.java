@@ -22,50 +22,67 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-public class NavigationFragment extends Fragment implements View.OnClickListener {
-    private OnFragmentInteractionListener mListener;
-    private Button btnFirst, btnPrevious, btnNext, btnLast;
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.OnListFragmentInteractionListener;
+import com.netikalyan.librarymanagement.viewmodel.BookViewModel;
 
-    public static NavigationFragment newInstance() {
-        return new NavigationFragment();
+public class BookListFragment extends Fragment {
+    private OnListFragmentInteractionListener mListener;
+    private BookEntityRecyclerViewAdapter mAdapter;
+
+    public BookListFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.db_navigation_fragment, container, false);
-        btnFirst = rootView.findViewById(R.id.btnFirst);
-        btnFirst.setOnClickListener(this);
-        btnPrevious = rootView.findViewById(R.id.btnPrevious);
-        btnPrevious.setOnClickListener(this);
-        btnNext = rootView.findViewById(R.id.btnNext);
-        btnNext.setOnClickListener(this);
-        btnLast = rootView.findViewById(R.id.btnLast);
-        btnLast.setOnClickListener(this);
-        return rootView;
+        View view = inflater.inflate(R.layout.fragment_bookentity_list, container, false);
+        if (view instanceof RecyclerView) {
+            Context context = view.getContext();
+            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            BookViewModel mViewModel = ViewModelProviders.of(this).get(BookViewModel.class);
+            mViewModel.getAllBooks().observe(this, bookEntities -> {
+                Log.d(getString(R.string.app_name),
+                        "Setting new books list to Adapter. Observer called");
+                mAdapter.setBookList(bookEntities);
+            });
+            mAdapter = new BookEntityRecyclerViewAdapter(mViewModel.getAllBooks().getValue(),
+                    mListener);
+            recyclerView.setAdapter(mAdapter);
+        }
+        return view;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnListFragmentInteractionListener) {
+            mListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnListFragmentInteractionListener");
         }
     }
 
@@ -73,25 +90,5 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnFirst:
-                mListener.onFragmentInteraction(OnFragmentInteractionListener.DBAction.FIRST);
-                break;
-            case R.id.btnPrevious:
-                mListener.onFragmentInteraction(OnFragmentInteractionListener.DBAction.PREVIOUS);
-                break;
-            case R.id.btnNext:
-                mListener.onFragmentInteraction(OnFragmentInteractionListener.DBAction.NEXT);
-                break;
-            case R.id.btnLast:
-                mListener.onFragmentInteraction(OnFragmentInteractionListener.DBAction.LAST);
-                break;
-            default:
-                break;
-        }
     }
 }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.librarymanagement;
+package com.netikalyan.librarymanagement.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
@@ -30,44 +30,44 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.netikalyan.librarymanagement.LibraryRepository;
+import com.netikalyan.librarymanagement.R;
+import com.netikalyan.librarymanagement.data.TransactionEntity;
+
 import java.util.List;
 
-public class MemberViewModel extends AndroidViewModel {
-    private LiveData<List<MemberEntity>> mMemberList;
-    private LibraryRepository mRepository;
+public class TransactionViewModel extends AndroidViewModel {
+    private final LiveData<List<TransactionEntity>> mTransactionList;
+    private final LibraryRepository mRepository;
 
-    public MemberViewModel(@NonNull Application application) {
+    public TransactionViewModel(@NonNull Application application) {
         super(application);
-        Log.e(application.getString(R.string.app_name), "BookViewModel");
+        Log.e(application.getString(R.string.app_name), "TransactionViewModel");
         mRepository = new LibraryRepository(application);
-        mMemberList = mRepository.getAllMembers();
+        mTransactionList = mRepository.getAllTransactions();
     }
 
-    public LiveData<List<MemberEntity>> getAllMembers() {
-        return mMemberList;
+    public LiveData<List<TransactionEntity>> getAllTransactions() {
+        return mTransactionList;
     }
 
-    public void addNewMember(MemberEntity member) {
-        mRepository.addNewMember(member);
+    public void addNewTransaction(TransactionEntity transaction) {
+        mRepository.loanBookToMember(transaction);
     }
 
-    public void updateMember(MemberEntity member) {
-        mRepository.updateMemberDetails(member);
+    public void updateTransaction(TransactionEntity transaction) {
+        mRepository.updateTransactionDetails(transaction);
     }
 
-    public void deleteMember(MemberEntity member) {
-        mRepository.deleteMember(member);
+    public void deleteTransaction(TransactionEntity transaction) {
+        mRepository.deleteTransaction(transaction);
     }
 
-    public void deleteAllMembers() {
-        mRepository.deleteAllBooks();
+    public void deleteAllTransactions() {
+        mRepository.deleteAllTransactions();
     }
 
-    public MemberEntity searchMember(int memberID) {
-        return mRepository.searchMember(memberID);
-    }
-
-    public MemberEntity[] searchMemberByName(String memberName) {
-        return mRepository.searchMemberByName(memberName);
+    public TransactionEntity searcbTransaction(int transaactionID) {
+        return mRepository.searchTransaction(transaactionID);
     }
 }
