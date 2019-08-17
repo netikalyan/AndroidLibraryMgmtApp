@@ -26,27 +26,21 @@ package com.netikalyan.librarymanagement.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 
-import com.netikalyan.librarymanagement.OnFragmentInteractionListener;
 import com.netikalyan.librarymanagement.R;
-import com.netikalyan.librarymanagement.data.BookEntity;
 import com.netikalyan.librarymanagement.data.ILibraryEntity;
-import com.netikalyan.librarymanagement.data.MemberEntity;
 import com.netikalyan.librarymanagement.data.OnListFragmentInteractionListener;
-import com.netikalyan.librarymanagement.data.TransactionEntity;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity
-        implements OnFragmentInteractionListener, OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements OnListFragmentInteractionListener {
     private BookListFragment mBookListFragment;
     private MemberListFragment mMemberListFragment;
     private TransactionListFragment mTransactionListFragment;
-    private TabLayout mTabLayout;
+    private String mTabText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,24 +53,23 @@ public class MainActivity extends AppCompatActivity
 
         FloatingActionButton fabNew = findViewById(R.id.fabAddNew);
         fabNew.setOnClickListener(v -> {
-            TabLayout.Tab tab = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition());
             Intent intent = new Intent(getApplicationContext(), EntityItemActivity.class);
-            intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT, Objects.requireNonNull(Objects.requireNonNull(tab).getText()).toString());
-            startActivityForResult(intent, mTabLayout.getSelectedTabPosition());
+            intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT, mTabText);
+            startActivity(intent);
         });
 
-        mTabLayout = findViewById(R.id.tabLayout);
+        TabLayout mTabLayout = findViewById(R.id.tabLayout);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (getString(R.string.tab_book_list).equals(Objects.requireNonNull(tab.getText()).toString())) {
+                mTabText = Objects.requireNonNull(tab.getText()).toString();
+                if (getString(R.string.tab_book_list).equals(mTabText)) {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container, mBookListFragment).commitNow();
-                } else if (getString(R.string.tab_member_list).equals(tab.getText().toString())) {
+                } else if (getString(R.string.tab_member_list).equals(mTabText)) {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container, mMemberListFragment).commitNow();
-                } else if (getString(R.string.tab_transaction_list)
-                        .equals(tab.getText().toString())) {
+                } else if (getString(R.string.tab_transaction_list).equals(mTabText)) {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container, mTransactionListFragment).commitNow();
                 }
@@ -97,41 +90,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (EntityItemActivity.CANCEL_CODE != resultCode) {
-            switch (requestCode) {
-                case 0: // BookFragment
-                    break;
-                case 1: //MemberFragment
-                    break;
-                case 2: //TransactionFragment
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void onFragmentInteraction(NavigationAction action) {
-    }
-
-    @Override
     public void onListFragmentInteraction(ILibraryEntity item) {
         Intent intent = new Intent(getApplicationContext(), EntityItemActivity.class);
-        if (item instanceof BookEntity) {
-            intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT, getString(R.string.tab_book));
-            intent.putExtra(EntityItemActivity.DB_ACTION, DBAction.MODIFY.ordinal());
-        } else if (item instanceof MemberEntity) {
-            intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT, getString(R.string.tab_member));
-            intent.putExtra(EntityItemActivity.DB_ACTION, DBAction.MODIFY.ordinal());
-        } else if (item instanceof TransactionEntity) {
-            intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT,
-                    getString(R.string.tab_transaction));
-            intent.putExtra(EntityItemActivity.DB_ACTION, DBAction.MODIFY.ordinal());
-        }
+        intent.putExtra(EntityItemActivity.SELECTED_TAB_TEXT, mTabText);
         intent.putExtra(EntityItemActivity.DB_ITEM, item);
-        startActivityForResult(intent, mTabLayout.getSelectedTabPosition());
+        startActivity(intent);
     }
 }

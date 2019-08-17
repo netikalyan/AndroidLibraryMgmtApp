@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    tools:context=".ui.TransactionFragment">
 
     <TableRow
         android:layout_width="match_parent"
@@ -13,11 +14,13 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/transaction_id" />
 
-        <TextView
-            android:id="@+id/textTransactionID"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editTransactionID"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/transaction_id"
+            android:hint="@string/transaction_id"
+            android:inputType="number" />
     </TableRow>
-
 
     <TableRow
         android:layout_width="match_parent"
@@ -28,9 +31,10 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/transaction_book_id" />
 
-        <TextView
-            android:id="@+id/textTransactionBookName"
-            android:layout_gravity="start|center_vertical" />
+        <AutoCompleteTextView
+            android:id="@+id/editTransactionBookName"
+            android:layout_gravity="start|center_vertical"
+            android:hint="@string/book_title" />
     </TableRow>
 
     <TableRow
@@ -38,12 +42,13 @@
         android:layout_margin="@dimen/table_row_margin">
 
         <TextView
-            android:layout_gravity="end|center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:layout_marginEnd="@dimen/text_margin" />
 
         <TextView
             android:id="@+id/textTransactionBookID"
             android:layout_gravity="start|center_vertical" />
+
     </TableRow>
 
     <TableRow
@@ -55,9 +60,11 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/transaction_member_id" />
 
-        <TextView
-            android:id="@+id/textTransactionMemberName"
-            android:layout_gravity="start|center_vertical" />
+        <AutoCompleteTextView
+            android:id="@+id/editTransactionMemberName"
+            android:layout_gravity="start|center_vertical"
+            android:hint="@string/member_name"
+            android:inputType="textAutoComplete" />
     </TableRow>
 
     <TableRow
@@ -65,12 +72,13 @@
         android:layout_margin="@dimen/table_row_margin">
 
         <TextView
-            android:layout_gravity="end|center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:layout_marginEnd="@dimen/text_margin" />
 
         <TextView
             android:id="@+id/textTransactionMemberID"
             android:layout_gravity="start|center_vertical" />
+
     </TableRow>
 
     <TableRow
@@ -82,9 +90,12 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/transaction_loan_date" />
 
-        <TextView
-            android:id="@+id/textTransactionLoanDate"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editTransactionLoanDate"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/transaction_loan_date"
+            android:hint="@string/transaction_loan_date"
+            android:inputType="date" />
     </TableRow>
 
     <TableRow
@@ -96,8 +107,11 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/transaction_return_date" />
 
-        <TextView
-            android:id="@+id/textTransactionReturnDate"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editTransactionReturnDate"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/transaction_return_date"
+            android:hint="@string/transaction_return_date"
+            android:inputType="date" />
     </TableRow>
 </TableLayout>

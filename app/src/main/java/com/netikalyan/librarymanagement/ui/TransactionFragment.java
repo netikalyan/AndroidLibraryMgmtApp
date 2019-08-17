@@ -67,7 +67,7 @@ public class TransactionFragment extends Fragment implements ITransactionManagem
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.transaction_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_transaction_edit, container, false);
         editTransactionID = rootView.findViewById(R.id.editTransactionID);
         textTransactionBookID = rootView.findViewById(R.id.textTransactionBookID);
         editTransactionBookName = rootView.findViewById(R.id.editTransactionBookName);
@@ -122,23 +122,22 @@ public class TransactionFragment extends Fragment implements ITransactionManagem
             }
         });
         if (null != getArguments()) {
-            setTransaction(
-                    Objects.requireNonNull(getArguments().getParcelable(EntityItemActivity.DB_ITEM)));
+            set(Objects.requireNonNull(getArguments().getParcelable(EntityItemActivity.DB_ITEM)));
         }
     }
 
     @Override
-    public void loanBookToMember(@NonNull TransactionEntity transaction) {
+    public void add(@NonNull TransactionEntity transaction) {
         mViewModel.addNewTransaction(transaction);
     }
 
     @Override
-    public void returnBookToLibrary(@NonNull TransactionEntity transaction) {
+    public void modify(@NonNull TransactionEntity transaction) {
         mViewModel.updateTransaction(transaction);
     }
 
     @Override
-    public void deleteTransaction(@NonNull TransactionEntity transaction) {
+    public void delete(@NonNull TransactionEntity transaction) {
         mViewModel.addNewTransaction(transaction);
     }
 
@@ -147,9 +146,9 @@ public class TransactionFragment extends Fragment implements ITransactionManagem
         return mViewModel.searcbTransaction(transactionID);
     }
 
+    @Override
     @NonNull
-    public TransactionEntity getTransactionDetails(boolean isNewTransaction)
-            throws LibraryException {
+    public TransactionEntity get() throws LibraryException {
         TransactionEntity transactionEntity = new TransactionEntity();
         if (-1 != getTransactionID())
             transactionEntity.setTransactionID(getTransactionID());
@@ -175,11 +174,25 @@ public class TransactionFragment extends Fragment implements ITransactionManagem
             transactionEntity.setDateOfLoan(getTransactionLoanDate());
         else
             throw new LibraryException(LibraryException.Constants.TRANSACTION_LOAN_DATE_MISSING);
-        if (!isNewTransaction && null == getTransactionReturnDate())
-            throw new LibraryException(LibraryException.Constants.TRANSACTION_RETURN_DATE_MISSING);
-        else
-            transactionEntity.setDateOfReturn(getTransactionReturnDate());
+        transactionEntity.setDateOfReturn(getTransactionReturnDate());
         return transactionEntity;
+    }
+
+    @Override
+    public void set(@NonNull TransactionEntity transaction) {
+        editTransactionID.setText(String.valueOf(transaction.getTransactionID()));
+        textTransactionBookID.setText(String.valueOf(transaction.getBookID()));
+        BookEntity bookEntity = mBookViewModel.searchBookByID(transaction.getBookID());
+        editTransactionBookName.setText(bookEntity.getTitle());
+        transaction.setBookTitle(bookEntity.getTitle());
+        textTransactionMemberID.setText(String.valueOf(transaction.getMemberID()));
+        MemberEntity memberEntity = mMemberViewModel.searchMember(transaction.getMemberID());
+        editTransactionMemberName.setText(memberEntity.getName());
+        transaction.setMemberName(memberEntity.getName());
+        editTransactionLoanDate
+                .setText(DateFormat.format(DATE_FORMAT, transaction.getDateOfLoan()));
+        editTransactionReturnDate
+                .setText(DateFormat.format(DATE_FORMAT, transaction.getDateOfReturn()));
     }
 
     private int getTransactionID() {
@@ -258,21 +271,5 @@ public class TransactionFragment extends Fragment implements ITransactionManagem
             Log.e(getString(R.string.app_name), "Missing Return Date");
         }
         return null;
-    }
-
-    private void setTransaction(@NonNull TransactionEntity transaction) {
-        editTransactionID.setText(String.valueOf(transaction.getTransactionID()));
-        textTransactionBookID.setText(String.valueOf(transaction.getBookID()));
-        BookEntity bookEntity = mBookViewModel.searchBookByID(transaction.getBookID());
-        editTransactionBookName.setText(bookEntity.getTitle());
-        transaction.setBookTitle(bookEntity.getTitle());
-        textTransactionMemberID.setText(String.valueOf(transaction.getMemberID()));
-        MemberEntity memberEntity = mMemberViewModel.searchMember(transaction.getMemberID());
-        editTransactionMemberName.setText(memberEntity.getName());
-        transaction.setMemberName(memberEntity.getName());
-        editTransactionLoanDate
-                .setText(DateFormat.format(DATE_FORMAT, transaction.getDateOfLoan()));
-        editTransactionReturnDate
-                .setText(DateFormat.format(DATE_FORMAT, transaction.getDateOfReturn()));
     }
 }

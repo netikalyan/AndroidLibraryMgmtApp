@@ -47,24 +47,16 @@ public class MemberFragment extends Fragment implements IMemberManagement {
     private MemberViewModel mViewModel;
     private EditText editMemberID, editMemberName, editMemberInfo;
 
-    public static MemberFragment newInstance(MemberEntity entity) {
-        MemberFragment fragment = new MemberFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("ENTITY", entity);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.member_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_member_edit, container, false);
         editMemberID = rootView.findViewById(R.id.editMemberID);
         editMemberName = rootView.findViewById(R.id.editMemberName);
         editMemberInfo = rootView.findViewById(R.id.editMemberInfo);
         if (null != getArguments()) {
-            setMember(Objects.requireNonNull(getArguments().getParcelable(EntityItemActivity.DB_ITEM)));
+            set(Objects.requireNonNull(getArguments().getParcelable(EntityItemActivity.DB_ITEM)));
         }
         return rootView;
     }
@@ -79,32 +71,39 @@ public class MemberFragment extends Fragment implements IMemberManagement {
     }
 
     @Override
-    public void addMember(MemberEntity member) {
+    public void add(MemberEntity member) {
         mViewModel.addNewMember(member);
     }
 
     @Override
-    public MemberEntity searchMember(int memberID) {
+    public MemberEntity search(int memberID) {
         return mViewModel.searchMember(memberID);
     }
 
     @Override
-    public void modifyMember(MemberEntity member) {
+    public void modify(MemberEntity member) {
         mViewModel.updateMember(member);
     }
 
     @Override
-    public void deleteMember(MemberEntity member) {
+    public void delete(MemberEntity member) {
         mViewModel.deleteMember(member);
     }
 
     @NonNull
-    public MemberEntity getMemberDetails() throws LibraryException {
+    public MemberEntity get() throws LibraryException {
         MemberEntity memberEntity = new MemberEntity();
         memberEntity.setMemberID(getMemberID());
         memberEntity.setName(getMemberName());
         memberEntity.setAddlInfo(getMemberInfo());
         return memberEntity;
+    }
+
+    @Override
+    public void set(@NonNull MemberEntity member) {
+        editMemberID.setText(String.valueOf(member.getMemberID()));
+        editMemberName.setText(member.getName());
+        editMemberInfo.setText(member.getAddlInfo());
     }
 
     private int getMemberID() throws LibraryException {
@@ -123,18 +122,11 @@ public class MemberFragment extends Fragment implements IMemberManagement {
     }
 
     @Nullable
-    private String getMemberInfo() throws LibraryException {
+    private String getMemberInfo() {
         String info = editMemberInfo.getText().toString();
         if (!info.isEmpty())
             return info;
         else
             return null;
-        //throw new LibraryException(LibraryException.Constants.MEMBER_INFO_MISSING);
-    }
-
-    private void setMember(@NonNull MemberEntity member) {
-        editMemberID.setText(String.valueOf(member.getMemberID()));
-        editMemberName.setText(member.getName());
-        editMemberInfo.setText(member.getAddlInfo());
     }
 }

@@ -24,15 +24,7 @@
 
 package com.netikalyan.librarymanagement;
 
-public interface OnFragmentInteractionListener {
-    enum DBAction {
-        ADD,
-        SEARCH,
-        MODIFY,
-        DELETE,
-        DELETE_ALL,
-    }
-
+public interface OnNavigationChangeListener {
     enum NavigationAction {
         FIRST,
         PREVIOUS,

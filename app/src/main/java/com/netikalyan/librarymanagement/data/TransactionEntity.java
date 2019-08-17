@@ -158,6 +158,9 @@ public class TransactionEntity implements ILibraryEntity {
         dest.writeInt(this.memberID);
         dest.writeInt(this.bookID);
         dest.writeLong(this.dateOfLoan.getTime());
-        dest.writeLong(this.dateOfReturn.getTime());
+        if (null != this.dateOfReturn)
+            dest.writeLong(this.dateOfReturn.getTime());
+        else
+            dest.writeLong(0);
     }
 }

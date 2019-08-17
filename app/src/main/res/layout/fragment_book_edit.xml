@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    tools:context=".ui.BookFragment">
 
     <TableRow
         android:layout_width="match_parent"
@@ -13,9 +14,12 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/book_id" />
 
-        <TextView
-            android:id="@+id/textBookID"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editBookID"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/book_id"
+            android:hint="@string/book_id"
+            android:inputType="number" />
     </TableRow>
 
     <TableRow
@@ -24,13 +28,15 @@
 
         <TextView
             android:layout_gravity="start|center_vertical"
-
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/book_title" />
 
-        <TextView
-            android:id="@+id/textBookTitle"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editBookTitle"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/book_title"
+            android:hint="@string/book_title"
+            android:inputType="text" />
     </TableRow>
 
     <TableRow
@@ -42,9 +48,12 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/book_author" />
 
-        <TextView
-            android:id="@+id/textBookAuthor"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editBookAuthor"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/book_author"
+            android:hint="@string/book_author"
+            android:inputType="textPersonName" />
     </TableRow>
 
     <TableRow
@@ -53,13 +62,15 @@
 
         <TextView
             android:layout_gravity="start|center_vertical"
-
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/book_price" />
 
-        <TextView
-            android:id="@+id/textBookPrice"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editBookPrice"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/book_price"
+            android:hint="@string/book_price"
+            android:inputType="numberDecimal" />
     </TableRow>
 
     <TableRow
@@ -71,8 +82,11 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/book_available" />
 
-        <TextView
-            android:id="@+id/textBookAvailable"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editBookAvailable"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/book_available"
+            android:hint="@string/book_available"
+            android:inputType="number" />
     </TableRow>
 </TableLayout>

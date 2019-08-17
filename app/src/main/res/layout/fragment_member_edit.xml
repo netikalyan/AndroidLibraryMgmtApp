@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    tools:context=".ui.MemberFragment">
 
     <TableRow
         android:layout_width="match_parent"
@@ -13,9 +14,12 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/member_id" />
 
-        <TextView
-            android:id="@+id/textMemberID"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editMemberID"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/member_id"
+            android:hint="@string/member_id"
+            android:inputType="number" />
     </TableRow>
 
     <TableRow
@@ -27,9 +31,12 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/member_name" />
 
-        <TextView
-            android:id="@+id/textMemberName"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editMemberName"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/member_name"
+            android:hint="@string/member_name"
+            android:inputType="textPersonName" />
     </TableRow>
 
     <TableRow
@@ -41,8 +48,12 @@
             android:layout_marginEnd="@dimen/text_margin"
             android:text="@string/member_info" />
 
-        <TextView
-            android:id="@+id/textMemberOtherInfo"
-            android:layout_gravity="start|center_vertical" />
+        <EditText
+            android:id="@+id/editMemberInfo"
+            android:layout_gravity="start|center_vertical"
+            android:autofillHints="@string/member_info"
+            android:hint="@string/member_info"
+            android:inputType="phone" />
     </TableRow>
+
 </TableLayout>

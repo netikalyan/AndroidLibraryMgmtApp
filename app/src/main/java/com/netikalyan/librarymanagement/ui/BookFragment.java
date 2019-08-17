@@ -52,14 +52,14 @@ public class BookFragment extends Fragment implements IBookManagement {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.book_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_book_edit, container, false);
         editBookID = rootView.findViewById(R.id.editBookID);
         editBookTitle = rootView.findViewById(R.id.editBookTitle);
         editBookAuthor = rootView.findViewById(R.id.editBookAuthor);
         editBookPrice = rootView.findViewById(R.id.editBookPrice);
         editBookAvailable = rootView.findViewById(R.id.editBookAvailable);
         if (null != getArguments()) {
-            setBook(Objects.requireNonNull(getArguments().getParcelable(EntityItemActivity.DB_ITEM)));
+            set(Objects.requireNonNull(getArguments().getParcelable(EntityItemActivity.DB_ITEM)));
         }
         return rootView;
     }
@@ -75,22 +75,22 @@ public class BookFragment extends Fragment implements IBookManagement {
     }
 
     @Override
-    public void addBook(BookEntity book) {
+    public void add(BookEntity book) {
         mViewModel.addNewBook(book);
     }
 
     @Override
-    public BookEntity searchBook(int bookID) {
+    public BookEntity search(int bookID) {
         return mViewModel.searchBookByID(bookID);
     }
 
     @Override
-    public void modifyBook(BookEntity book) {
+    public void modify(BookEntity book) {
         mViewModel.updateBook(book);
     }
 
     @Override
-    public void deleteBook(BookEntity book) {
+    public void delete(BookEntity book) {
         mViewModel.deleteBook(book);
     }
 
@@ -129,8 +129,9 @@ public class BookFragment extends Fragment implements IBookManagement {
         throw new LibraryException(LibraryException.Constants.BOOK_AVAILABLE_COPIES_MISSING);
     }
 
+    @Override
     @NonNull
-    public BookEntity getBookDetails() throws LibraryException {
+    public BookEntity get() throws LibraryException {
         BookEntity bookEntity = new BookEntity();
         bookEntity.setBookID(getBookID());
         bookEntity.setTitle(getBookTitle());
@@ -140,7 +141,8 @@ public class BookFragment extends Fragment implements IBookManagement {
         return bookEntity;
     }
 
-    private void setBook(@NonNull BookEntity book) {
+    @Override
+    public void set(@NonNull BookEntity book) {
         editBookID.setText(String.valueOf(book.getBookID()));
         editBookTitle.setText(book.getTitle());
         editBookAuthor.setText(book.getAuthor());

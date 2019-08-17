@@ -34,12 +34,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.netikalyan.librarymanagement.OnFragmentInteractionListener;
-import com.netikalyan.librarymanagement.OnFragmentInteractionListener.NavigationAction;
+import com.netikalyan.librarymanagement.OnNavigationChangeListener;
+import com.netikalyan.librarymanagement.OnNavigationChangeListener.NavigationAction;
 import com.netikalyan.librarymanagement.R;
 
 public class NavigationFragment extends Fragment implements View.OnClickListener {
-    private OnFragmentInteractionListener mListener;
+    private OnNavigationChangeListener mListener;
 
     public static NavigationFragment newInstance() {
         return new NavigationFragment();
@@ -64,11 +64,11 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnNavigationChangeListener) {
+            mListener = (OnNavigationChangeListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnNavigationChangeListener");
         }
     }
 

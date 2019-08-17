@@ -25,6 +25,7 @@
 package com.netikalyan.librarymanagement.ui;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,57 +34,49 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.netikalyan.librarymanagement.OnFragmentInteractionListener.DBAction;
 import com.netikalyan.librarymanagement.R;
-import com.netikalyan.librarymanagement.data.BookEntity;
+import com.netikalyan.librarymanagement.data.IEntityManagement;
+import com.netikalyan.librarymanagement.data.ILibraryEntity;
 import com.netikalyan.librarymanagement.data.LibraryException;
-import com.netikalyan.librarymanagement.data.MemberEntity;
-import com.netikalyan.librarymanagement.data.TransactionEntity;
 
 public class EntityItemActivity extends AppCompatActivity {
 
     public static final String SELECTED_TAB_TEXT = "SELECTED_TAB";
-    public static final String DB_ACTION = "DB_ACTION";
     public static final String DB_ITEM = "DB_ITEM";
+
     private static final int DELETE_CODE = 2;
     private static final int SAVE_CODE = 1;
     public static final int CANCEL_CODE = 0;
-    private Fragment mFragment;
-    private String mTabText;
-    private int mDBAction;
+
+    private IEntityManagement mEntityManager;
+    private IEntityManagement.Action mDBAction = IEntityManagement.Action.ADD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(getString(R.string.app_name), "EntityItemActivity onCreate");
         setContentView(R.layout.activity_entity_item);
-        mTabText = getIntent().getStringExtra(SELECTED_TAB_TEXT);
-        mDBAction = getIntent()
-                .getIntExtra(DB_ACTION, DBAction.ADD.ordinal());
-        if (getString(R.string.tab_book_list).equals(mTabText)) {
-            mFragment = new BookFragment();
-            if (DBAction.MODIFY.ordinal() == mDBAction) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(DB_ITEM, getIntent().getParcelableExtra(DB_ITEM));
-                mFragment.setArguments(bundle);
-            }
+        String mTabText = getIntent().getStringExtra(SELECTED_TAB_TEXT);
+        Fragment fragment;
+        if (getString(R.string.tab_transaction_list).equals(mTabText)) {
+            fragment = new TransactionFragment();
         } else if (getString(R.string.tab_member_list).equals(mTabText)) {
-            mFragment = new MemberFragment();
-            if (DBAction.MODIFY.ordinal() == mDBAction) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(DB_ITEM, getIntent().getParcelableExtra(DB_ITEM));
-                mFragment.setArguments(bundle);
-            }
-        } else if (getString(R.string.tab_transaction_list).equals(mTabText)) {
-            mFragment = new TransactionFragment();
-            if (DBAction.MODIFY.ordinal() == mDBAction) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(DB_ITEM, getIntent().getParcelableExtra(DB_ITEM));
-                mFragment.setArguments(bundle);
-            }
+            fragment = new MemberFragment();
+        } else {
+            fragment = new BookFragment();
         }
+
+        Parcelable parcelable = getIntent().getParcelableExtra(DB_ITEM);
+        if (null != parcelable) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(DB_ITEM, parcelable);
+            fragment.setArguments(bundle);
+            mDBAction = IEntityManagement.Action.MODIFY;
+        }
+
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment, mFragment).commitNow();
+                .replace(R.id.fragment, fragment).commitNow();
+        mEntityManager = (IEntityManagement) fragment;
     }
 
     @Override
@@ -97,49 +90,18 @@ public class EntityItemActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_save:
-                if (getString(R.string.tab_book_list).equals(mTabText)) {
-                    try {
-                        BookEntity bookEntity = ((BookFragment) mFragment).getBookDetails();
-                        if (DBAction.ADD.ordinal() == mDBAction) {
-                            ((BookFragment) mFragment).addBook(bookEntity);
-                        } else if (DBAction.MODIFY.ordinal() == mDBAction) {
-                            ((BookFragment) mFragment).modifyBook(bookEntity);
-                        }
-                    } catch (LibraryException e) {
-                        Log.e(getString(R.string.app_name),
-                                "Book details null. Please fill relevant fields");
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                                .show();
+                try {
+                    ILibraryEntity entity = mEntityManager.get();
+                    if (IEntityManagement.Action.ADD == mDBAction) {
+                        mEntityManager.add(entity);
+                    } else if (IEntityManagement.Action.MODIFY == mDBAction) {
+                        mEntityManager.modify(entity);
                     }
-                } else if (getString(R.string.tab_member_list).equals(mTabText)) {
-                    try {
-                        MemberEntity memberEntity = ((MemberFragment) mFragment).getMemberDetails();
-                        if (DBAction.ADD.ordinal() == mDBAction) {
-                            ((MemberFragment) mFragment).addMember(memberEntity);
-                        } else if (DBAction.MODIFY.ordinal() == mDBAction) {
-                            ((MemberFragment) mFragment).modifyMember(memberEntity);
-                        }
-                    } catch (LibraryException e) {
-                        Log.e(getString(R.string.app_name),
-                                "Book details null. Please fill relevant fields");
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                } else if (getString(R.string.tab_transaction_list).equals(mTabText)) {
-                    try {
-                        TransactionEntity entity = ((TransactionFragment) mFragment)
-                                .getTransactionDetails(DBAction.ADD.ordinal() == mDBAction);
-                        if (DBAction.ADD.ordinal() == mDBAction) {
-                            ((TransactionFragment) mFragment).loanBookToMember(entity);
-                        } else if (DBAction.MODIFY.ordinal() == mDBAction) {
-                            ((TransactionFragment) mFragment).returnBookToLibrary(entity);
-                        }
-                    } catch (LibraryException e) {
-                        Log.e(getString(R.string.app_name),
-                                "Transaction null. Please fill relevant fields");
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                                .show();
-                    }
+                } catch (LibraryException e) {
+                    Log.e(getString(R.string.app_name),
+                            "Few of the details missing. Please fill relevant fields");
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+                            .show();
                 }
                 setResult(SAVE_CODE);
                 finish();
@@ -149,37 +111,14 @@ public class EntityItemActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.menu_delete:
-                if (getString(R.string.tab_book_list).equals(mTabText)) {
-                    try {
-                        ((BookFragment) mFragment)
-                                .deleteBook(((BookFragment) mFragment).getBookDetails());
-                    } catch (LibraryException e) {
-                        Log.e(getString(R.string.app_name),
-                                "Error in getting book details. Please check all relevant fields");
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                } else if (getString(R.string.tab_member_list).equals(mTabText)) {
-                    try {
-                        ((MemberFragment) mFragment).deleteMember(
-                                ((MemberFragment) mFragment).getMemberDetails());
-                    } catch (LibraryException e) {
-                        Log.e(getString(R.string.app_name),
-                                "Error in getting member details. Please check all relevant fields");
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                } else if (getString(R.string.tab_transaction_list).equals(mTabText)) {
-                    try {
-                        TransactionEntity entity =
-                                ((TransactionFragment) mFragment).getTransactionDetails(false);
-                        ((TransactionFragment) mFragment).deleteTransaction(entity);
-                    } catch (LibraryException e) {
-                        Log.e(getString(R.string.app_name),
-                                "Error in getting transaction details. Please check all relevant fields");
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
-                                .show();
-                    }
+                try {
+                    ILibraryEntity entity = mEntityManager.get();
+                    mEntityManager.delete(entity);
+                } catch (LibraryException e) {
+                    Log.e(getString(R.string.app_name),
+                            "Error in getting details. Please check all relevant fields");
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+                            .show();
                 }
                 setResult(DELETE_CODE);
                 finish();
