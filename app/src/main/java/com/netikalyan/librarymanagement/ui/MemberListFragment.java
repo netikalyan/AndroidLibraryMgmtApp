@@ -24,14 +24,14 @@
 
 package com.netikalyan.librarymanagement.ui;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +61,7 @@ public class MemberListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            MemberViewModel mViewModel = ViewModelProviders.of(this).get(MemberViewModel.class);
+            MemberViewModel mViewModel = new ViewModelProvider(this).get(MemberViewModel.class);
             mViewModel.getAllMembers().observe(this, memberEntities -> mAdapter.setMemberList(memberEntities));
             mAdapter = new MemberEntityRecyclerViewAdapter(mViewModel.getAllMembers().getValue(),
                     mListener);

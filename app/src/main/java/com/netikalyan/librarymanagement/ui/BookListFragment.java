@@ -24,14 +24,14 @@
 
 package com.netikalyan.librarymanagement.ui;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +62,7 @@ public class BookListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            BookViewModel mViewModel = ViewModelProviders.of(this).get(BookViewModel.class);
+            BookViewModel mViewModel = new ViewModelProvider(this).get(BookViewModel.class);
             mViewModel.getAllBooks().observe(this, bookEntities -> {
                 Log.d(getString(R.string.app_name),
                         "Setting new books list to Adapter. Observer called");
