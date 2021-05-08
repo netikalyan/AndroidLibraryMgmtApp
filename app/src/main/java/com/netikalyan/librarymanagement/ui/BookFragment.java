@@ -25,16 +25,16 @@
 package com.netikalyan.librarymanagement.ui;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.netikalyan.librarymanagement.R;
 import com.netikalyan.librarymanagement.data.BookEntity;
@@ -68,7 +68,7 @@ public class BookFragment extends Fragment implements IBookManagement {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(BookViewModel.class);
+        mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(BookViewModel.class);
         mViewModel.getAllBooks().observe(this, bookEntities -> {
             // TODO: anything to do here ?
             Log.d(getString(R.string.app_name), "Change in Books. Observer called");

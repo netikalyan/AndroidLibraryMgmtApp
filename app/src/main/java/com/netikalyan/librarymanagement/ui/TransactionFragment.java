@@ -24,11 +24,7 @@
 
 package com.netikalyan.librarymanagement.ui;
 
-import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +34,11 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.netikalyan.librarymanagement.R;
 import com.netikalyan.librarymanagement.data.BookEntity;
@@ -81,9 +82,9 @@ public class TransactionFragment extends Fragment implements ITransactionManagem
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(TransactionViewModel.class);
-        mBookViewModel = new ViewModelProvider(this).get(BookViewModel.class);
-        mMemberViewModel = new ViewModelProvider(this).get(MemberViewModel.class);
+        mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(TransactionViewModel.class);
+        mBookViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(BookViewModel.class);
+        mMemberViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(MemberViewModel.class);
         mViewModel.getAllTransactions().observe(this, transactionEntities -> {
             // TODO: anything to do here ?
         });

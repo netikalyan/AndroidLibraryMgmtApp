@@ -24,17 +24,18 @@
 
 package com.netikalyan.librarymanagement.ui;
 
-import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.netikalyan.librarymanagement.R;
 import com.netikalyan.librarymanagement.data.OnListFragmentInteractionListener;
@@ -65,7 +66,7 @@ public class TransactionListFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
             TransactionViewModel transactionViewModel =
-                    new ViewModelProvider(this).get(TransactionViewModel.class);
+                    new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(TransactionViewModel.class);
             transactionViewModel.getAllTransactions()
                     .observe(this, transactionEntities -> {
                         if (null != transactionEntities && 0 < transactionEntities.size())
@@ -76,14 +77,14 @@ public class TransactionListFragment extends Fragment {
                     transactionViewModel.getAllTransactions().getValue(), mListener);
             recyclerView.setAdapter(mAdapter);
 
-            BookViewModel bookViewModel = new ViewModelProvider(this).get(BookViewModel.class);
+            BookViewModel bookViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(BookViewModel.class);
             bookViewModel.getAllBooks().observe(this, bookEntities -> {
                 if (null != bookEntities && 0 < bookEntities.size())
                     mAdapter.setBookList(bookEntities);
             });
 
             MemberViewModel memberViewModel =
-                    new ViewModelProvider(this).get(MemberViewModel.class);
+                    new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(MemberViewModel.class);
             memberViewModel.getAllMembers().observe(this, memberEntities -> {
                 if (null != memberEntities && 0 < memberEntities.size())
                     mAdapter.setMemberList(memberEntities);

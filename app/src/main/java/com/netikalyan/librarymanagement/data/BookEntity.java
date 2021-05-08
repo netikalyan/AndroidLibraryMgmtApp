@@ -24,12 +24,13 @@
 
 package com.netikalyan.librarymanagement.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import android.os.Parcel;
-import android.os.Parcelable;
-import androidx.annotation.NonNull;
 
 @Entity(tableName = "Books")
 public class BookEntity implements ILibraryEntity {

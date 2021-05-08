@@ -24,15 +24,16 @@
 
 package com.netikalyan.librarymanagement.ui;
 
-import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.netikalyan.librarymanagement.R;
 import com.netikalyan.librarymanagement.data.IMemberManagement;
@@ -64,7 +65,7 @@ public class MemberFragment extends Fragment implements IMemberManagement {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(MemberViewModel.class);
+        mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(MemberViewModel.class);
         mViewModel.getAllMembers().observe(this, memberEntities -> {
             // TODO: anything to do here ?
         });

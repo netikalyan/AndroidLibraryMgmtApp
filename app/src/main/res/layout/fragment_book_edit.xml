@@ -18,6 +18,7 @@
             android:id="@+id/editBookID"
             android:layout_gravity="start|center_vertical"
             android:autofillHints="@string/book_id"
+            android:background="@android:color/transparent"
             android:hint="@string/book_id"
             android:inputType="number" />
     </TableRow>
@@ -35,6 +36,7 @@
             android:id="@+id/editBookTitle"
             android:layout_gravity="start|center_vertical"
             android:autofillHints="@string/book_title"
+            android:background="@android:color/transparent"
             android:hint="@string/book_title"
             android:inputType="text" />
     </TableRow>
@@ -52,6 +54,7 @@
             android:id="@+id/editBookAuthor"
             android:layout_gravity="start|center_vertical"
             android:autofillHints="@string/book_author"
+            android:background="@android:color/transparent"
             android:hint="@string/book_author"
             android:inputType="textPersonName" />
     </TableRow>
@@ -69,6 +72,7 @@
             android:id="@+id/editBookPrice"
             android:layout_gravity="start|center_vertical"
             android:autofillHints="@string/book_price"
+            android:background="@android:color/transparent"
             android:hint="@string/book_price"
             android:inputType="numberDecimal" />
     </TableRow>
@@ -86,6 +90,7 @@
             android:id="@+id/editBookAvailable"
             android:layout_gravity="start|center_vertical"
             android:autofillHints="@string/book_available"
+            android:background="@android:color/transparent"
             android:hint="@string/book_available"
             android:inputType="number" />
     </TableRow>
